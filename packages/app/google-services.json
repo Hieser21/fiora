@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "877808682096",
+    "project_id": "mason-d04f7",
+    "storage_bucket": "mason-d04f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877808682096:android:628f3d9d09aea48e1960b5",
+        "android_client_info": {
+          "package_name": "com.personalapp.mason"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877808682096-hf6tla9f5459rfrr8hcqlsapm39vcgf8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXplLn6yVDNmy47hNhjYDFf8j1m7ubPNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877808682096-hf6tla9f5459rfrr8hcqlsapm39vcgf8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
