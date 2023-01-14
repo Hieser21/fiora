@@ -3,6 +3,8 @@ import koaSend from 'koa-send';
 import koaStatic from 'koa-static';
 import path from 'path';
 import http from 'http';
+const mime = require('mime-types')
+const fs = require('fs');
 import { Server } from 'socket.io';
 
 import logger from '@fiora/utils/logger';
@@ -61,6 +63,17 @@ app.use(
         gzip: true,
     }),
 );
+
+app.use(ctx => {
+    if (ctx.request.url === '/fiora.apk') {
+        var path = "../../fiora.apk";
+        var mimeType = mime.lookup(path);
+        const src = fs.createReadStream(path);
+        ctx.response.set("content-type", mimeType);
+        ctx.response.set("content-disposition", "attachment; filename=fiora.apk");
+        ctx.body = src;
+    } 
+});
 
 const routes: Routes = {
     ...userRoutes,
