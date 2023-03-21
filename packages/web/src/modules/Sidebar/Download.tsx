@@ -12,7 +12,7 @@ interface DownloadProps {
 
 function Download(props: DownloadProps) {
     const { visible, onClose } = props;
-    const androidDownloadUrl = `${window.location.origin}/fiora.apk`;
+    const androidDownloadUrl = `${window.location.origin}/mason.apk`;
     const iOSDownloadUrl = '';
 
     return (
