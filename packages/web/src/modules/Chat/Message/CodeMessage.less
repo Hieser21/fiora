@@ -5,14 +5,25 @@
     padding: 0 4px;
     text-align: center;
     cursor: pointer;
-    color: var(--primary-text-color-10);
+    color: #ffffff;
+    transform: skew(-5deg);
+    border: 2px solid #ff0000;
+    box-shadow: 3px 3px 0 #000000;
+    background-color: #2b2b2b;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: skew(-5deg) translateY(-2px);
+        box-shadow: 5px 5px 0 #000000;
+    }
 }
 
 .codeInfo {
     display: flex;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #ff0000;
     align-items: center;
     justify-content: center;
+    padding: 8px 0;
 }
 
 .icon {
@@ -21,10 +32,14 @@
     text-align: center;
     line-height: 30px;
     margin: 0 2px;
+    color: #ff0000;
+    text-shadow: 1px 1px 0 #000000;
 }
 
 .codeSize {
     margin-left: 8px;
+    color: #ffffff;
+    letter-spacing: 1px;
 }
 
 .codeViewButton {
@@ -32,6 +47,14 @@
     font-size: 12px;
     text-align: center;
     margin-top: 6px;
+    color: #ff0000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: #ffffff;
+    }
 }
 
 .codeDialog {
@@ -49,6 +72,7 @@
             min-height: 300px;
             display: flex;
             flex-direction: column;
+            background: #2b2b2b;
         }
         .rc-dialog-body {
             padding: 0 16px;
@@ -63,6 +87,15 @@
             @media @mobile {
                 max-width: 100%;
             }
+
+            &::-webkit-scrollbar {
+                width: 8px;
+                background: #1a1a1a;
+            }
+            
+            &::-webkit-scrollbar-thumb {
+                background: #ff0000;
+            }
         }
     }
 }
@@ -74,24 +107,30 @@
     right: 18px;
     z-index: 999;
     font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .pre {
     margin: 0 !important;
     font-size: 12px !important;
-    background-color: white !important;
+    background-color: #1a1a1a !important;
     position: relative !important;
+    border-left: 4px solid #ff0000;
 
     :global {
         .line-numbers-rows {
             position: absolute;
             left: 0 !important;
             top: 12px !important;
-            background-color: white;
+            background-color: #2b2b2b;
+            color: #ff0000;
         }
     }
 }
 
 .code {
     position: static !important;
+    color: #ffffff;
+    text-shadow: 1px 1px 0 #000000;
 }

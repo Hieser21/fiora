@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     },
     nick: {
         fontSize: 13,
-        color: '#333',
+        color: '#fff',
     },
     nickSelf: {
         marginRight: 4,

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     },
     memberName: {
         fontSize: 14,
-        color: '#333',
+        color: '#fff',
         marginLeft: 8,
     },
     memberInfoContainer: {

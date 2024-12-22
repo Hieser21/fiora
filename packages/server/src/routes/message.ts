@@ -24,7 +24,7 @@ import {
     DisableNewUserSendMessageKey,
     Redis,
 } from '@fiora/database/redis/initRedis';
-import client from '../@fiora/config/client';
+import client from '@fiora/config/client';
 
 const { isValid } = Types.ObjectId;
 

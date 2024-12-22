@@ -1,9 +1,21 @@
 :global {
     .rc-dropdown {
         max-width: 100%;
+        transform: skew(-3deg);
+        border: 2px solid #ff0000;
+        background-color: #2b2b2b;
+        box-shadow: 4px 4px 0 #000000;
+        
+        &:hover {
+            transform: skew(-3deg) translateY(-2px);
+            box-shadow: 6px 6px 0 #000000;
+        }
     }
     
     .rc-select-dropdown {
         z-index: 1500 !important;
+        background: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
+        border: 2px solid #ff0000;
+        box-shadow: 4px 4px 0 #000000;
     }
 }

@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     },
     nick: {
         fontSize: 16,
-        color: '#333',
+        color: '#fff',
     },
     time: {
         fontSize: 14,

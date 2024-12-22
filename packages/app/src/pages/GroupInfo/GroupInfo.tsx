@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     infoValue: {
-        color: '#333',
+        color: '#fff',
         marginLeft: 12,
     },
     nick: {
-        color: '#333',
+        color: '#fff',
         marginTop: 6,
     },
     buttonContainer: {

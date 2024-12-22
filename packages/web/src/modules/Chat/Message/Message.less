@@ -3,10 +3,14 @@
     margin-right: 54px;
     margin-bottom: 10px;
     position: relative;
+    transform: skew(-2deg);
+    transition: all 0.3s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
 .avatar {
     min-width: 44px;
+    border: 2px solid #ff0000;
+    box-shadow: 2px 2px 0 #000000;
 }
 
 .right {
@@ -26,28 +30,39 @@
 .tag {
     height: 16px;
     line-height: 16px;
-    border-radius: 3px;
+    border-radius: 0;
     padding: 0 5px;
     display: inline-block;
     font-size: 12px;
-    background-color: var(--primary-color-9);
-    color: var(--primary-text-color-10);
-    transform: scale(0.9);
+    background-color: #ff0000;
+    color: #ffffff;
+    transform: scale(0.9) skew(-5deg);
     margin-left: -1px;
     margin-right: 2px;
     user-select: text;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000000;
+    box-shadow: 2px 2px 0 #000000;
 }
 
 .nickname {
-    color: #333;
+    color: #ffffff;
     font-size: 13px;
     user-select: text;
     margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000000;
 }
 
 .time {
-    color: #666;
+    color: #ff0000;
     font-size: 12px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #000000;
 }
 
 .contentButtonBlock {
@@ -59,15 +74,18 @@
 
 .content {
     display: inline-block;
-    color: #555;
+    color: #ffffff;
     font-size: 14px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #2b2b2b;
     padding: 6px 8px;
-    border-radius: 8px;
-    border-top-left-radius: 0px;
+    border-radius: 0;
+    border: 2px solid #ff0000;
+    box-shadow: 3px 3px 0 #000000;
     min-height: 28px;
     margin-top: 3px;
     max-width: -webkit-fill-available;
+    transform: skew(-5deg);
+    letter-spacing: 0.5px;
 }
 
 .arrow {
@@ -75,7 +93,7 @@
     height: 0;
     border-style: solid;
     border-width: 0px 7px 15px 0;
-    border-color: transparent rgba(255, 255, 255, 0.8) transparent transparent;
+    border-color: transparent #ff0000 transparent transparent;
     position: absolute;
     top: 23px;
     left: 49px;
@@ -91,137 +109,77 @@
 }
 
 .button {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #2b2b2b;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #000000;
 
     &:hover {
-        background-color: #f0f0f0;
-        color: rgba(165, 181, 192, 1);
-    }
-
-    @borderRadius: 3px;
-    &:first-child {
-        border-top-left-radius: @borderRadius;
-        border-bottom-left-radius: @borderRadius;
-    }
-    &:last-child {
-        border-top-right-radius: @borderRadius;
-        border-bottom-right-radius: @borderRadius;
+        background-color: #ff0000;
+        color: #ffffff;
     }
 }
 
 .textMessage {
     user-select: text;
     word-break: break-word;
+    color: #ffffff;
     overflow: hidden;
     line-height: 17px;
 }
 
 .imageMessage {
     position: relative;
+    border: 2px solid #ff0000;
+    box-shadow: 3px 3px 0 #000000;
+    transform: skew(-5deg);
 }
 
 .imageProgress {
-    display: none;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80px;
     height: 80px;
+    color: #ff0000;
+    text-shadow: 1px 1px 0 #000000;
 }
 
 .imageProgressNumber {
-    color: var(--primary-text-color-10);
+    color: #ff0000;
     text-align: center;
     line-height: 80px;
     font-size: 18px;
-}
-
-.image {
-    max-width: 500px;
-    max-height: 400px;
-}
-
-.iamgeLoading {
-    .image {
-        filter: blur(5px);
-    }
-    .imageProgress {
-        display: block;
-    }
-    .imageProgressNumber {
-        display: block;
-    }
-}
-
-.huaji {
-    .image {
-        width: auto;
-        max-height: 150px;
-    }
-}
-
-.selecteAble {
-    user-select: text;
-}
-
-.baidu {
-    width: 30px;
-    height: 30px;
-    background-repeat: no-repeat;
-    margin: 0 2px;
-    background-size: 30px auto;
-    background-image: url(~@fiora/assets/images/baidu.png);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .self {
     flex-direction: row-reverse;
     margin-right: 0px;
     margin-left: 54px;
+    transform: skew(2deg);
 
     .right {
         margin-left: 0px;
         margin-right: 12px;
-        display: flex;
-        flex-direction: column;
         align-items: flex-end;
     }
-    .nicknameTimeBlock {
-        display: flex;
-        flex-direction: row-reverse;
-    }
-    .tag {
-        margin-left: 2px;
-        margin-right: -1px;
-    }
-    .nickname {
-        margin-right: 0;
-        margin-left: 4px;
-    }
-    .contentButtonBlock {
-        flex-direction: row-reverse;
-        padding-left: 30px;
-        padding-right: 0;
-    }
+
     .content {
-        color: rgba(255, 255, 255, 0.9);
-        background-color: var(--primary-color-10);
-        border-top-left-radius: 8px;
-        border-top-right-radius: 0px;
+        background-color: #ff0000;
+        transform: skew(5deg);
     }
-    .buttonList {
-        margin-right: 5px;
-        left: 0;
-        right: inherit;
-    }
+
     .arrow {
-        border-width: 0 0 15px 7px;
-        border-color: transparent transparent transparent var(--primary-color-10);
-        left: initial;
+        border-color: transparent transparent transparent #ff0000;
         right: 49px;
-        top: 23px;
-    }
-    .textMessage {
-        color: var(--primary-text-color-10);
+        left: initial;
     }
 }
+

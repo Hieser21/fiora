@@ -1,19 +1,36 @@
 .inviteMessage {
     width: 160px;
-    padding: 0 4px;
+    padding: 4px;
     text-align: center;
     cursor: pointer;
-    color: var(--primary-text-color-10);
+    color: #ffffff;
+    transform: skew(-5deg);
+    border: 2px solid #ff0000;
+    box-shadow: 3px 3px 0 #000000;
+    background-color: #2b2b2b;
+    transition: all 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+
+    &:hover {
+        transform: skew(-5deg) translateY(-4px);
+        box-shadow: 5px 5px 0 #000000;
+    }
 }
 
 .info {
     display: flex;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #ff0000;
     align-items: center;
+    justify-content: center;
+    padding: 8px 0;
 }
 
 .infoText {
     line-height: 18px;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000000;
 }
 
 .join {
@@ -21,4 +38,14 @@
     font-size: 12px;
     text-align: center;
     margin-top: 6px;
+    color: #ff0000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000000;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: #ffffff;
+    }
 }

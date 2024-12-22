@@ -1,16 +1,26 @@
 import React, { SyntheticEvent, useState, useMemo } from 'react';
 import { getOSSFileUrl } from '../utils/uploadFile';
+import { css } from 'linaria';
 
 export const avatarFailback = '/avatar/0.jpg';
 
+const persona5Style = css`
+    transition: all 0.3s ease;
+    border: 3px solid #ff0000;
+    box-shadow: 3px 3px 0 #000000;
+    transform: skew(-5deg);
+    
+    &:hover {
+        transform: skew(-5deg) scale(1.1);
+        box-shadow: 5px 5px 0 #000000;
+        border-color: #ffffff;
+    }
+`;
+
 type Props = {
-    /** 头像链接 */
     src: string;
-    /** 展示大小 */
     size?: number;
-    /** 额外类名 */
     className?: string;
-    /** 点击事件 */
     onClick?: () => void;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
@@ -26,10 +36,6 @@ function Avatar({
 }: Props) {
     const [failTimes, updateFailTimes] = useState(0);
 
-    /**
-     * Handle avatar load fail event. Use faillback avatar instead
-     * If still fail then ignore error event
-     */
     function handleError(e: SyntheticEvent<HTMLImageElement>) {
         if (failTimes >= 2) {
             return;
@@ -51,8 +57,13 @@ function Avatar({
 
     return (
         <img
-            className={className}
-            style={{ width: size, height: size, borderRadius: size / 2 }}
+            className={`${persona5Style} ${className}`}
+            style={{ 
+                width: size, 
+                height: size, 
+                borderRadius: size / 2,
+                backgroundColor: '#2b2b2b'
+            }}
             src={url}
             alt=""
             onClick={onClick}

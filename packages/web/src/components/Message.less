@@ -2,6 +2,7 @@
     .rc-notification {
         top: 5px !important;
         z-index: 1100 !important;
+        transform: skew(-5deg);
     }
 }
 
@@ -10,22 +11,38 @@
     display: flex;
     align-items: center;
     margin-top: 1px;
+    padding: 8px 12px;
+    background-color: #2b2b2b;
+    border: 2px solid #ff0000;
+    box-shadow: 3px 3px 0 #000000;
+    transform: skew(-5deg);
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: skew(-5deg) translateY(-2px);
+        box-shadow: 5px 5px 0 #000000;
+    }
 
     :global {
         .iconfont {
             font-size: 22px;
+            transition: color 0.3s ease;
     
             &.icon-success {
-                color: green;
+                color: #00ff00;
+                text-shadow: 2px 2px 0 #000000;
             }
             &.icon-error {
-                color: #d82e2e;
+                color: #ff0000;
+                text-shadow: 2px 2px 0 #000000;
             }
             &.icon-warning {
-                color: orange;
+                color: #ffd700;
+                text-shadow: 2px 2px 0 #000000;
             }
             &.icon-info {
-                color: #2773ef;
+                color: #00ffff;
+                text-shadow: 2px 2px 0 #000000;
             }
         }
     }
@@ -34,4 +51,7 @@
 .messageText {
     margin-left: 8px;
     font-size: 16px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }

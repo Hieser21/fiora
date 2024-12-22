@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
     },
     listItemTitle: {
-        color: '#333',
+        color: '#fff',
     },
     listItemArrow: {
         color: '#999',

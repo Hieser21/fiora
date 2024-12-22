@@ -1,7 +1,47 @@
 import React, { useRef, useState } from 'react';
-
+import { css } from 'linaria';
 import IconButton from './IconButton';
-import Style from './Input.less';
+
+const inputStyle = css`
+    .inputContainer {
+        position: relative;
+        display: flex;
+        align-items: center;
+        transform: skew(-5deg);
+        border: 2px solid #ff0000;
+        box-shadow: 3px 3px 0 #000000;
+        background-color: #2b2b2b;
+        transition: all 0.3s ease;
+
+        &:focus-within {
+            transform: skew(-5deg) translateY(-2px);
+            box-shadow: 5px 5px 0 #000000;
+            border-color: #ffffff;
+        }
+    }
+
+    .input {
+        flex: 1;
+        padding: 8px 12px;
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-size: 14px;
+        letter-spacing: 1px;
+
+        &::placeholder {
+            color: rgba(255, 0, 0, 0.6);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .inputIconButton {
+        margin-right: 4px;
+    }
+`;
 
 interface InputProps {
     value?: string;
@@ -24,17 +64,21 @@ function Input(props: InputProps) {
         onFocus = () => {},
     } = props;
 
+    const [lockEnter, setLockEnter] = useState(false);
+    const $input = useRef(null);
+
     function handleInput(e: any) {
         onChange(e.target.value);
     }
 
-    const [lockEnter, setLockEnter] = useState(false);
     function handleIMEStart() {
         setLockEnter(true);
     }
+
     function handleIMEEnd() {
         setLockEnter(false);
     }
+
     function handleKeyDown(e: any) {
         if (lockEnter) {
             return;
@@ -44,7 +88,6 @@ function Input(props: InputProps) {
         }
     }
 
-    const $input = useRef(null);
     function handleClickClear() {
         onChange('');
         // @ts-ignore
@@ -52,9 +95,9 @@ function Input(props: InputProps) {
     }
 
     return (
-        <div className={`${Style.inputContainer} ${className}`}>
+        <div className={`${inputStyle} ${className}`}>
             <input
-                className={Style.input}
+                className="input"
                 type={type}
                 value={value}
                 onChange={handleInput}
@@ -67,7 +110,7 @@ function Input(props: InputProps) {
                 onFocus={onFocus}
             />
             <IconButton
-                className={Style.inputIconButton}
+                className="inputIconButton"
                 width={32}
                 height={32}
                 iconSize={18}

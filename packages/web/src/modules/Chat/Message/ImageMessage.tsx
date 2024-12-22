@@ -1,36 +1,75 @@
 import React, { useState, useCallback, useRef, MouseEvent } from 'react';
 import loadable from '@loadable/component';
-
 import { isMobile } from '@fiora/utils/ua';
 import { getOSSFileUrl } from '../../../utils/uploadFile';
-import Style from './Message.less';
 import { CircleProgress } from '../../../components/Progress';
+import { css } from 'linaria';
 
-const ReactViewerAsync = loadable(
-    async () =>
-        // @ts-ignore 
-        import(/* webpackChunkName: "react-viewer" */ 'react-viewer'),
-);
+const styles = {
+    imageMessage: css`
+        position: relative;
+        transform: skew(-5deg);
+        border: 2px solid #ff0000;
+        box-shadow: 3px 3px 0 #000000;
+        background-color: #2b2b2b;
+        padding: 4px;
+        transition: all 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+        cursor: pointer;
 
-interface ImageMessageProps {
-    src: string;
-    loading: boolean;
-    percent: number;
-}
+        &:hover {
+            transform: skew(-5deg) translateY(-4px);
+            box-shadow: 5px 5px 0 #000000;
+        }
+    `,
+    image: css`
+        max-width: 100%;
+        max-height: 200px;
+        border: 1px solid #ff0000;
+    `,
+    loading: css`
+        &::before {
+            content: 'LOADING...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #000000;
+            letter-spacing: 2px;
+        }
+    `,
+    progress: css`
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    `,
+    progressNumber: css`
+        color: #ff0000;
+        font-weight: bold;
+        text-shadow: 1px 1px 0 #000000;
+        letter-spacing: 2px;
+    `
+};
 
-function ImageMessage(props: ImageMessageProps) {
-    const { src, loading, percent } = props;
+const ReactViewerAsync = loadable(() => import('react-viewer'));
 
+function ImageMessage({ src, loading, percent }: { src: string; loading: boolean; percent: number }) {
     const [viewer, toggleViewer] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const closeViewer = useCallback(() => toggleViewer(false), []);
     const $container = useRef(null);
 
+    // Keep existing image sizing logic
     let imageSrc = src;
     const containerWidth = isMobile ? window.innerWidth - 25 - 50 : 450;
     const maxWidth = containerWidth - 100 > 500 ? 500 : containerWidth - 100;
     const maxHeight = 200;
     let width = 200;
     let height = 200;
+
     const parseResult = /width=([0-9]+)&height=([0-9]+)/.exec(imageSrc);
     if (parseResult) {
         const natureWidth = +parseResult[1];
@@ -46,24 +85,10 @@ function ImageMessage(props: ImageMessageProps) {
         height = naturehHeight * scale;
         imageSrc = /^(blob|data):/.test(imageSrc)
             ? imageSrc.split('?')[0]
-            : getOSSFileUrl(
-                src,
-                `image/resize,w_${Math.floor(width)},h_${Math.floor(
-                    height,
-                )}/quality,q_90`,
-            );
-    }
-
-    let className = Style.imageMessage;
-    if (loading) {
-        className += ` ${Style.iamgeLoading}`;
-    }
-    if (/huaji=true/.test(imageSrc)) {
-        className += ` ${Style.huaji}`;
+            : getOSSFileUrl(src, `image/resize,w_${Math.floor(width)},h_${Math.floor(height)}/quality,q_90`);
     }
 
     function handleImageViewerMaskClick(e: MouseEvent) {
-        // @ts-ignore
         if (e.target?.tagName !== 'IMG') {
             closeViewer();
         }
@@ -71,42 +96,44 @@ function ImageMessage(props: ImageMessageProps) {
 
     return (
         <>
-            <div className={className} ref={$container}>
+            <div 
+                className={`${styles.imageMessage} ${loading ? styles.loading : ''}`}
+                ref={$container}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
                 <img
-                    className={Style.image}
+                    className={styles.image}
                     src={imageSrc}
                     width={width}
                     height={height}
                     onClick={() => toggleViewer(true)}
+                    alt="message"
                 />
-                <CircleProgress
-                    className={Style.imageProgress}
-                    percent={percent}
-                    strokeWidth={5}
-                    strokeColor="#a0c672"
-                    trailWidth={5}
-                />
-                <div
-                    className={`${Style.imageProgress} ${Style.imageProgressNumber}`}
-                >
-                    {Math.ceil(percent)}%
-                </div>
-                {viewer && (
-                    <ReactViewerAsync
-                        // eslint-disable-next-line react/destructuring-assignment
-                        visible={viewer}
-                        onClose={closeViewer}
-                        onMaskClick={handleImageViewerMaskClick}
-                        images={[
-                            {
-                                src: getOSSFileUrl(src, `image/quality,q_95`),
-                                alt: '',
-                            },
-                        ]}
-                        noNavbar
-                    />
+                {loading && (
+                    <>
+                        <CircleProgress
+                            className={styles.progress}
+                            percent={percent}
+                            strokeWidth={5}
+                            strokeColor="#ff0000"
+                            trailWidth={5}
+                        />
+                        <div className={`${styles.progress} ${styles.progressNumber}`}>
+                            {Math.ceil(percent)}%
+                        </div>
+                    </>
                 )}
             </div>
+            {viewer && (
+                <ReactViewerAsync
+                    visible={viewer}
+                    onClose={closeViewer}
+                    onMaskClick={handleImageViewerMaskClick}
+                    images={[{ src: getOSSFileUrl(src, `image/quality,q_95`), alt: '' }]}
+                    noNavbar
+                />
+            )}
         </>
     );
 }
