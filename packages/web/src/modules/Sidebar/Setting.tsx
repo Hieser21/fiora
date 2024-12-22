@@ -10,7 +10,7 @@ import readDiskFile from '../../utils/readDiskFile';
 import uploadFile, { getOSSFileUrl } from '../../utils/uploadFile';
 import playSound from '../../utils/playSound';
 import Dialog from '../../components/Dialog';
-import config from '../../../../config/client';
+import config from '@fiora/config/client';
 import Message from '../../components/Message';
 import useAction from '../../hooks/useAction';
 import { State } from '../../state/reducer';

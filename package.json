@@ -10,7 +10,7 @@
     "install": "npx lerna bootstrap && yarn link"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 20"
   },
   "author": {
     "name": "碎碎酱",
@@ -35,6 +35,20 @@
     "typescript": "^3.8.2"
   },
   "dependencies": {
-    "commander": "^8.0.0"
+    "@supabase/supabase-js": "^2.47.10",
+    "commander": "^8.0.0",
+    "crypto-browserify": "^3.12.1",
+    "expo": "^52.0.21",
+    "expo-device": "~7.0.1",
+    "expo-file-system": "~18.0.6",
+    "expo-image-picker": "~16.0.3",
+    "expo-linear-gradient": "~14.0.1",
+    "expo-media-library": "~17.0.4",
+    "fs": "^0.0.1-security",
+    "native-base": "^3.4.28",
+    "os-browserify": "^0.3.0",
+    "path": "^0.12.7",
+    "path-browserify": "^1.0.1",
+    "react-native": "^0.76.5"
   }
 }

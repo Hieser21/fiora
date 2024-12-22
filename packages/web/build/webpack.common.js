@@ -13,9 +13,6 @@ module.exports = {
         filename: 'js/[name].[chunkhash:8].js',
         path: path.resolve(__dirname, '../dist/fiora'),
     },
-    resolve: {
-        extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-    },
     module: {
         rules: [
             {
@@ -125,5 +122,28 @@ module.exports = {
         new Dotenv({
             silent: true,
         }),
+        new webpack.DefinePlugin({
+            'process.env': JSON.stringify(process.env),
+            'process.browser': true,
+            'process.version': JSON.stringify(process.version)
+          }),
+          new webpack.ProvidePlugin({
+            process: 'process/browser'
+          })
     ],
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+            alias: {
+                '@fiora/config': path.resolve(__dirname, '../../config'),
+                
+                '@': path.resolve(__dirname, 'src')
+            },
+            fallback: {
+                "os": require.resolve("os-browserify/browser"),
+                "fs": false,
+                "path": require.resolve("path-browserify"),
+                "crypto": require.resolve("crypto-browserify")
+            }
+        
+    }
 };

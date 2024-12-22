@@ -42,6 +42,7 @@ function Avatar({
         if (/^(blob|data):/.test(src)) {
             return src;
         }
+        
         return getOSSFileUrl(
             src,
             `image/resize,w_${size * 2},h_${size * 2}/quality,q_90`,

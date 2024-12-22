@@ -7,7 +7,7 @@ export default function initRedis() {
     const client = redis.createClient({
         ...config.redis,
         no_ready_check: true,
-        auth_pass: "ugi33aSCNECZ7GmIOCRF2SZJama6MXNx"
+        auth_pass: "nrTvNjMufAI3Wrhz50JXc933RmYgJM4p"
     });
 
     client.on('error', (err) => {

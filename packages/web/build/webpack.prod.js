@@ -40,4 +40,18 @@ module.exports = merge(common, {
         }),
         new WebpackBar(),
     ],
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        alias: {
+            '@fiora/config': path.resolve(__dirname, 'packages/config'),
+            '@fiora/config/client': path.resolve(__dirname, 'packages/config/client'),
+            '@': path.resolve(__dirname, 'src')
+        },
+        fallback: {
+            "os": require.resolve("os-browserify/browser"),
+            "fs": false,
+            "path": require.resolve("path-browserify"),
+            "crypto": require.resolve("crypto-browserify")
+        }
+    }
 });

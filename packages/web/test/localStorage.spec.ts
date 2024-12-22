@@ -1,5 +1,5 @@
 import getData, { LocalStorageKey } from '../src/localStorage';
-import config from '../../config/client';
+import config from '@fiora/config/client';
 import themes from '../src/themes';
 
 describe('client/localStorage.ts', () => {

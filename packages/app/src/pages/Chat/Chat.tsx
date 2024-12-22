@@ -1,65 +1,23 @@
 import React, { useEffect, useRef } from 'react';
-import {
-    StyleSheet,
-    KeyboardAvoidingView,
-    ScrollView,
-    Dimensions,
-} from 'react-native';
-import Constants from 'expo-constants';
+import { StyleSheet, KeyboardAvoidingView, ScrollView, Dimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Actions } from 'react-native-router-flux';
+import { LinearGradient } from 'expo-linear-gradient';
+import { View } from 'native-base';
 
 import { isiOS } from '../../utils/platform';
-
 import MessageList from './MessageList';
 import Input from './Input';
 import PageContainer from '../../components/PageContainer';
 import { Friend, Group, Linkman } from '../../types/redux';
-import {
-    useFocusLinkman,
-    useIsLogin,
-    useSelfId,
-    useStore,
-} from '../../hooks/useStore';
-import {
-    getDefaultGroupOnlineMembers,
-    getGroupOnlineMembers,
-    getUserOnlineStatus,
-} from '../../service';
+import { useFocusLinkman, useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
+import { getDefaultGroupOnlineMembers, getGroupOnlineMembers, getUserOnlineStatus } from '../../service';
 import action from '../../state/action';
 import { formatLinkmanName } from '../../utils/linkman';
 import fetch from '../../utils/fetch';
 
+const { width, height } = Dimensions.get('window');
 let lastMessageIdCache = '';
-
-const keyboardOffset = (() => {
-    const { width, height } = Dimensions.get('window');
-    const screenRatio = height / width;
-    if (screenRatio === 667 / 375) {
-        // iPhone 6 / 7 / 8
-        return 64;
-    }
-    if (screenRatio === 736 / 414) {
-        // iPhone 6 / 7 / 8 PLUS
-        return 64;
-    }
-    if (screenRatio === 812 / 375) {
-        // iPhone X / 12mini
-        return 86;
-    }
-    if (screenRatio === 896 / 414) {
-        // iPhone Xr / 11 / 11 Pro Max
-        return 86;
-    }
-    if (screenRatio === 844 / 390) {
-        // iPhone 12 / 12 Prop
-        return 64;
-    }
-    if (screenRatio === 926 / 428) {
-        // iPhone 12 Pro Max
-        return 64;
-    }
-    return Constants.statusBarHeight + 44;
-})();
 
 export default function Chat() {
     const isLogin = useIsLogin();
@@ -67,100 +25,107 @@ export default function Chat() {
     const { focus } = useStore();
     const linkman = useFocusLinkman();
     const $messageList = useRef<ScrollView>();
+    const insets = useSafeAreaInsets();
 
-    async function fetchGroupOnlineMembers() {
-        let onlineMembers: Group['members'] = [];
-        if (isLogin) {
-            onlineMembers = await getGroupOnlineMembers(focus);
-        } else {
-            onlineMembers = await getDefaultGroupOnlineMembers();
-        }
-        if (onlineMembers) {
-            action.updateGroupProperty(focus, 'members', onlineMembers);
-        }
-    }
-    async function fetchUserOnlineStatus() {
-        const isOnline = await getUserOnlineStatus(focus.replace(self, ''));
-        action.updateFriendProperty(focus, 'isOnline', isOnline);
-    }
+    const keyboardOffset = insets.bottom + 44;
+
     useEffect(() => {
-        if (!linkman || !isLogin) {
-            return;
-        }
-        const request =
-            linkman.type === 'group'
-                ? fetchGroupOnlineMembers
-                : fetchUserOnlineStatus;
+        if (!linkman || !isLogin) return;
+        
+        const request = linkman.type === 'group' 
+            ? fetchGroupOnlineMembers 
+            : fetchUserOnlineStatus;
+            
         request();
-        const timer = setInterval(() => request(), 1000 * 60);
+        const timer = setInterval(request, 60000);
         return () => clearInterval(timer);
     }, [focus, isLogin]);
 
     useEffect(() => {
-        if (Actions.currentScene !== 'chat') {
-            return;
-        }
+        if (Actions.currentScene !== 'chat') return;
+        
         Actions.refresh({
             title: formatLinkmanName(linkman as Linkman),
         });
     }, [(linkman as Group).members, (linkman as Friend).isOnline]);
 
-    async function intervalUpdateHistory() {
-        if (isLogin && linkman) {
-            if (linkman.messages.length > 0) {
-                const lastMessageId =
-                    linkman.messages[linkman.messages.length - 1]._id;
-                if (lastMessageId !== lastMessageIdCache) {
-                    lastMessageIdCache = lastMessageId;
-                    await fetch('updateHistory', {
-                        linkmanId: focus,
-                        messageId: lastMessageId,
-                    });
-                }
-            }
-        }
-    }
     useEffect(() => {
-        const timer = setInterval(intervalUpdateHistory, 1000 * 5);
+        const timer = setInterval(intervalUpdateHistory, 5000);
         return () => clearInterval(timer);
     }, [focus]);
 
-    function scrollToEnd(time = 0) {
-        if (time > 200) {
-            return;
-        }
-        if ($messageList.current) {
-            $messageList.current!.scrollToEnd({ animated: false });
-        }
-
-        setTimeout(() => {
-            scrollToEnd(time + 50);
-        }, 50);
-    }
-
-    function handleInputHeightChange() {
-        if ($messageList.current) {
-            scrollToEnd();
+    async function fetchGroupOnlineMembers() {
+        const onlineMembers = isLogin 
+            ? await getGroupOnlineMembers(focus)
+            : await getDefaultGroupOnlineMembers();
+            
+        if (onlineMembers) {
+            action.updateGroupProperty(focus, 'members', onlineMembers);
         }
     }
+
+    async function fetchUserOnlineStatus() {
+        const isOnline = await getUserOnlineStatus(focus.replace(self, ''));
+        action.updateFriendProperty(focus, 'isOnline', isOnline);
+    }
+
+    async function intervalUpdateHistory() {
+        if (isLogin && linkman && linkman.messages.length > 0) {
+            const lastMessageId = linkman.messages[linkman.messages.length - 1]._id;
+            if (lastMessageId !== lastMessageIdCache) {
+                lastMessageIdCache = lastMessageId;
+                await fetch('updateHistory', {
+                    linkmanId: focus,
+                    messageId: lastMessageId,
+                });
+            }
+        }
+    }
+
+    const scrollToEnd = (time = 0) => {
+        if (time > 200) return;
+        
+        if ($messageList.current) {
+            $messageList.current.scrollToEnd({ animated: false });
+        }
+
+        setTimeout(() => scrollToEnd(time + 50), 50);
+    };
 
     return (
         <PageContainer disableSafeAreaView>
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior={isiOS ? 'padding' : 'height'}
-                keyboardVerticalOffset={keyboardOffset}
+            <LinearGradient
+                colors={['rgba(0,0,0,0.8)', 'rgba(255,0,0,0.2)']}
+                style={styles.gradient}
             >
-                {/* 
-                // @ts-ignore */}
-                <MessageList $scrollView={$messageList} />
-                <Input onHeightChange={handleInputHeightChange} />
-            </KeyboardAvoidingView>
+                <View style={styles.wrapper}>
+                    <KeyboardAvoidingView
+                        style={styles.container}
+                        behavior={isiOS ? 'padding' : 'height'}
+                        keyboardVerticalOffset={keyboardOffset}
+                    >
+                        <MessageList $scrollView={$messageList} />
+                        <Input onHeightChange={scrollToEnd} />
+                    </KeyboardAvoidingView>
+                </View>
+            </LinearGradient>
         </PageContainer>
     );
 }
 
 const styles = StyleSheet.create({
+    gradient: {
+        flex: 1,
+    },
+    wrapper: {
+        flex: 1,
+        margin: 8,
+        borderRadius: 4,
+        borderWidth: 2,
+        borderColor: '#FF0000',
+        overflow: 'hidden',
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
     container: {
         flex: 1,
     },

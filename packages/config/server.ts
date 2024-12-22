@@ -12,11 +12,11 @@ export default {
     port: env.Port ? parseInt(env.Port, 10) : 9200,
 
     // mongodb address
-    database: "mongodb+srv://Bot:rattlesnake20@cluster0.ehnrp.mongodb.net/?retryWrites=true&w=majority",
+    database: "mongodb+srv://Bot:rattlesnake20@cluster0.ehnrp.mongodb.net/persona",
 
     redis: {
-        host: env.RedisHost || 'redis-19086.c1.asia-northeast1-1.gce.cloud.redislabs.com',
-        port: 19086,
+        host: env.RedisHost || 'redis-18607.c283.us-east-1-4.ec2.redns.redis-cloud.com',
+        port: 18607,
     },
 
     // jwt encryption secret
@@ -55,4 +55,9 @@ export default {
         bucket: env.BUCKET || '',
         endpoint: env.ENDPOINT || '',
     },
+    //supabase config
+    supabase: {
+        url: env.SUPABASE_URL || 'https://pktxkdhuqdoxmtnwdirz.supabase.co',
+        key: env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrdHhrZGh1cWRveG10bndkaXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ3MTg1NDUsImV4cCI6MjA1MDI5NDU0NX0.8F2His81RSoaNQnGXxH4eQnMF4qOuoTUfswmdmoekHM',
+    }
 };

@@ -19,7 +19,7 @@ import {
     leaveGroup,
 } from '../../service';
 import useAction from '../../hooks/useAction';
-import config from '../../../../config/client';
+import config from '@fiora/config/client';
 import { ShowUserOrGroupInfoContext } from '../../context';
 
 interface GroupManagePanelProps {

@@ -3,7 +3,8 @@ import * as Notifications from 'expo-notifications';
 import { useState, useEffect } from 'react';
 import { Platform, AppState } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { setNotificationToken } from '../service';
+import * as Device from 'expo-device';
+import { register, setNotificationToken } from '../service';
 import action from '../state/action';
 import { State, User } from '../types/redux';
 import { isiOS } from '../utils/platform';
@@ -13,11 +14,11 @@ import store from '../state/store';
 function enableNotification() {
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
-            shouldShowAlert: true,
-            shouldPlaySound: true,
-            shouldSetBadge: false,
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
         }),
-    });
+      });
 }
 function disableNotification() {
     Notifications.setNotificationHandler({
@@ -38,36 +39,24 @@ function Nofitication() {
     const [notificationToken, updateNotificationToken] = useState('');
 
     async function registerForPushNotificationsAsync() {
-        // Push notification to Android device need google service
-        // Not supported in China
         if (Device.isDevice) {
-            const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-              const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-              finalStatus = status;
-            }
-            if (finalStatus !== 'granted') {
-              alert('Failed to get push token for push notification!');
-              return;
-            }
-            const token = await Notifications.getExpoPushTokenAsync();
-            console.log(token);
-            this.setState({ expoPushToken: token });
-          } else {
-            alert('Must use physical device for Push Notifications');
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
           }
-        
-          if (Platform.OS === 'android') {
-            Notifications.createChannelAndroidAsync('default', {
-              name: 'default',
-              sound: true,
-              priority: 'max',
-              vibrate: [0, 250, 250, 250],
-            });
+          
+          if (finalStatus !== 'granted') {
+            return;
           }
-        };
-    }
+      
+          const token = await Notifications.getExpoPushTokenAsync();
+          return token.data;
+        }
+        return;
+      }
     function handleClickNotification(response: any) {
         const { focus } = response.notification.request.content.data;
         setTimeout(() => {
@@ -83,7 +72,7 @@ function Nofitication() {
     }
     useEffect(() => {
         disableNotification();
-        registerForPushNotificationsAsync();
+    registerForPushNotificationsAsync();
 
         Notifications.addNotificationResponseReceivedListener(
             handleClickNotification,
@@ -109,9 +98,9 @@ function Nofitication() {
         }
     }
     useEffect(() => {
-        AppState.addEventListener('change', handleAppStateChange);
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
         return () => {
-            AppState.removeEventListener('change', handleAppStateChange);
+            subscription.remove();
         };
     }, []);
 

@@ -3,7 +3,7 @@ import { MB } from '../utils/const';
 export default {
     server:
         process.env.Server ||
-        (process.env.NODE_ENV === 'development' ? '//localhost:9200' : '/'),
+        (process.env.NODE_ENV === 'development' ? 'https://psychic-disco-gvqgjj4wv7x29jr6-9200.app.github.dev/' : '/'),
 
     maxImageSize: process.env.MaxImageSize
         ? parseInt(process.env.MaxImageSize, 10)

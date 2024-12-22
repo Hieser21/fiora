@@ -1,82 +1,70 @@
-import * as OSS from 'ali-oss';
-import fetch from './fetch';
+import * as config from '../../../config/server';
+import { createClient } from '@supabase/supabase-js';
 
-let ossClient: OSS;
-let endpoint = '/';
+let supabaseClient;
+let endpoint = '';
+
 export async function initOSS() {
-    const [, token] = await fetch('getSTS');
-    if (token?.enable) {
-        // @ts-ignore
-        ossClient = new OSS({
-            region: token.region,
-            accessKeyId: token.AccessKeyId,
-            accessKeySecret: token.AccessKeySecret,
-            stsToken: token.SecurityToken,
-            bucket: token.bucket,
-        });
-        if (token.endpoint) {
-            endpoint = `//${token.endpoint}/`;
-        }
-
-        const OneHour = 1000 * 60 * 60;
-        setInterval(async () => {
-            const [, refreshToken] = await fetch('getSTS');
-            if (refreshToken?.enable) {
-                // @ts-ignore
-                ossClient = new OSS({
-                    region: refreshToken.region,
-                    accessKeyId: refreshToken.AccessKeyId,
-                    accessKeySecret: refreshToken.AccessKeySecret,
-                    stsToken: refreshToken.SecurityToken,
-                    bucket: refreshToken.bucket,
-                });
-            }
-        }, OneHour);
+    const supabase = createClient(
+        config.default.supabase.url,
+        config.default.supabase.key
+    );
+    supabaseClient = supabase;
+    
+    if (config.default.supabase.url) {
+        endpoint = `${config.default.supabase.url}/`;
     }
+
+    // Refresh token handling if needed
+    const OneHour = 1000 * 60 * 60;
+    setInterval(async () => {
+        const { data: session } = await supabase.auth.getSession();
+        if (session) {
+            // Token refresh logic here if needed
+        }
+    }, OneHour);
 }
 
 export function getOSSFileUrl(url = '', process = '') {
-    const [rawUrl = '', extraPrams = ''] = url.split('?');
-    if (ossClient && rawUrl.startsWith('oss:')) {
-        const filename = rawUrl.slice(4);
-        // expire 5min
-        return `${ossClient.signatureUrl(filename, { expires: 300, process })}${
-            extraPrams ? `&${extraPrams}` : ''
+    const [rawUrl = '', extraParams = ''] = url.split('?');
+    function stripHttps(url: string): string {
+        return url.replace('https://pktxkdhuqdoxmtnwdirz.supabase.co/', '');
+      }
+    if (supabaseClient && rawUrl.startsWith('supabase:')) {
+        const filename = rawUrl.slice(9);
+        const { data } = supabaseClient.storage
+            .from('p5-users')
+            .getPublicUrl(stripHttps(url));
+            
+        return `${data.data.publicUrl}${process ? `?process=${process}` : ''}${
+            extraParams ? `&${extraParams}` : ''
         }`;
     }
-    if (/\/\/cdn\.suisuijiang\.com/.test(rawUrl)) {
-        return `${rawUrl}?x-oss-process=${process}${
-            extraPrams ? `&${extraPrams}` : ''
-        }`;
+    let data = supabaseClient.storage.from('p5-users').getPublicUrl(stripHttps(url))
+    if (stripHttps(url).startsWith('/')){
+        return `${url}`
     }
-    return `${url}`;
+    return `${data.data.publicUrl}`;
 }
 
-/**
- * 上传文件
- * @param blob 文件blob数据
- * @param fileName 文件名
- */
 export default async function uploadFile(
-    blob: Blob,
+    blob: Blob | string,
     fileName: string,
+    isBase64 = false,
 ): Promise<string> {
-    // 阿里云 OSS 不可用, 上传文件到服务端
-    if (!ossClient) {
-        const [uploadErr, result] = await fetch('uploadFile', {
-            file: blob,
-            fileName,
-        });
-        if (uploadErr) {
-            throw Error(uploadErr);
-        }
-        return result.url;
+    if (!supabaseClient) {
+        throw Error('Supabase client not initialized');
     }
 
-    // 上传到阿里OSS
-    const result = await ossClient.put(fileName, blob);
-    if (result.res.status === 200) {
-        return endpoint + result.name;
+    const file = isBase64 ? Buffer.from(blob as string, 'base64') : blob;
+    
+    const { data, error } = await supabaseClient.storage
+        .from('p5-users')
+        .upload(fileName, file);
+
+    if (error) {
+        throw Error(`Upload failed: ${error.message}`);
     }
-    return Promise.reject('上传文件失败');
+
+    return endpoint + fileName;
 }

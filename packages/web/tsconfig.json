@@ -1,6 +1,10 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "module": "esnext"
-  }
+    "paths": {
+      "@fiora/config/*": ["../config/*"]
+    },
+    "baseUrl": "https://psychic-disco-gvqgjj4wv7x29jr6-8080.app.github.dev/",
+    "module": "ESNext"
+}
 }

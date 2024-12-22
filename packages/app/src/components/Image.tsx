@@ -16,16 +16,15 @@ export default function Image({
     height = '100%',
     style,
 }: Props) {
-    // @ts-ignore
     let source: ImageSourcePropType = src;
     if (typeof src === 'string') {
-        let uri = getOSSFileUrl(src, `image/quality,q_80`);
+        let uri = getOSSFileUrl(src, `image/quality,q_90`);
         if (width !== '100%' && height !== '100%') {
             uri = getOSSFileUrl(
                 src,
                 `image/resize,w_${Math.ceil(width as number)},h_${Math.ceil(
                     height as number,
-                )}/quality,q_80`,
+                )}/quality,q_90`,
             );
         }
         source = {
@@ -36,5 +35,23 @@ export default function Image({
             },
         };
     }
-    return <BaseImage source={source} style={[style, { width, height }]} />;
+    return (
+        <BaseImage 
+            source={source} 
+            style={[
+                {
+                    width,
+                    height,
+                    borderWidth: 2,
+                    borderColor: '#FF0000',
+                    shadowColor: '#FF0000',
+                    shadowOffset: { width: 2, height: 2 },
+                    shadowOpacity: 0.6,
+                    shadowRadius: 3,
+                    transform: [{ skewX: '-5deg' }]
+                },
+                style
+            ]} 
+        />
+    );
 }
