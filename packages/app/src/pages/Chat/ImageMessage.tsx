@@ -1,7 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { View } from 'native-base';
 import React from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import Image from '../../components/Image';
 import { Message } from '../../types/redux';
 
@@ -25,6 +26,18 @@ function ImageMessage({
     let scale = 1;
     let width = 0;
     let height = 0;
+    
+    const scaleAnim = React.useRef(new Animated.Value(0)).current;
+
+    React.useEffect(() => {
+        Animated.spring(scaleAnim, {
+            toValue: 1,
+            tension: 20,
+            friction: 7,
+            useNativeDriver: true,
+        }).start();
+    }, []);
+
     const parseResult = /width=([0-9]+)&height=([0-9]+)/.exec(message.content);
     if (parseResult) {
         width = parseInt(parseResult[1], 10);
@@ -43,32 +56,67 @@ function ImageMessage({
     }
 
     return (
-        <View
-            style={[
-                styles.container,
-                { width: width * scale, height: height * scale },
-            ]}
-        >
-            <TouchableOpacity
-                onPress={handleImageClick}
-                {...(couldDelete ? { onLongPress } : {})}
-            >
-                <Image
-                    src={message.content}
-                    style={{ width: width * scale, height: height * scale }}
-                />
-            </TouchableOpacity>
-        </View>
+        <Animated.View style={[
+            styles.container,
+            { 
+                width: width * scale, 
+                height: height * scale,
+                transform: [
+                    { scale: scaleAnim },
+                    { skewX: '-5deg' }
+                ]
+            }
+        ]}>
+            <BlurView intensity={15} tint="dark" style={styles.blurContainer}>
+                <LinearGradient
+                    colors={['#FF0000', '#8B0000', '#000000']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.gradient}
+                >
+                    <TouchableOpacity
+                        onPress={handleImageClick}
+                        {...(couldDelete ? { onLongPress } : {})}
+                        style={styles.touchable}
+                    >
+                        <Image
+                            src={message.content}
+                            style={[
+                                styles.image,
+                                { width: width * scale - 4, height: height * scale - 4 }
+                            ]}
+                        />
+                    </TouchableOpacity>
+                </LinearGradient>
+            </BlurView>
+        </Animated.View>
     );
 }
 
-export default ImageMessage;
-
 const styles = StyleSheet.create({
     container: {
-        height: 200,
-        width: ScreenWidth - 130 - 16,
-        borderRadius: 3,
+        borderRadius: 8,
         overflow: 'hidden',
+        shadowColor: '#FF0000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.6,
+        shadowRadius: 4,
+        elevation: 8,
     },
+    blurContainer: {
+        flex: 1,
+    },
+    gradient: {
+        flex: 1,
+        padding: 2,
+    },
+    touchable: {
+        flex: 1,
+    },
+    image: {
+        borderRadius: 6,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    }
 });
+
+export default ImageMessage;

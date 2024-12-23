@@ -1,7 +1,9 @@
-import { View, Icon, Text } from 'native-base';
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Icon, Text } from 'native-base';
 import { Actions } from 'react-native-router-flux';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 type Props = {
     text?: string;
@@ -9,37 +11,66 @@ type Props = {
 
 function BackButton({ text = '' }: Props) {
     return (
-        <TouchableOpacity onPress={() => Actions.pop()}>
-            <View 
-                background="#2B2B2B" 
-                borderWidth={2} 
-                borderColor="#FF0000"
-                shadow={5}
-                style={{ 
-                    flexDirection: 'row', 
-                    alignItems: 'center',
-                    transform: [{ skewX: '-10deg' }] 
-                }}
-                px={4}
-                py={2}
-            >
-                <Icon
-                    name="chevron-back-outline"
-                    color="#FF0000"
-                    size={7}
-                />
-                <Text
-                    color="white"
-                    fontSize="md"
-                    fontWeight="bold"
-                    letterSpacing={1}
-                    textTransform="uppercase"
+        <TouchableOpacity 
+            onPress={() => Actions.pop()}
+            style={styles.touchable}
+        >
+            <BlurView intensity={20} tint="dark" style={styles.container}>
+                <LinearGradient
+                    colors={['#FF0000', '#8B0000', '#000000']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.gradient}
                 >
-                    {text}
-                </Text>
-            </View>
+                    <View style={styles.content}>
+                        <Icon
+                            name="chevron-back-outline"
+                            style={styles.icon}
+                        />
+                        <Text style={styles.text}>
+                            {text}
+                        </Text>
+                    </View>
+                </LinearGradient>
+            </BlurView>
         </TouchableOpacity>
     );
 }
+
+const styles = StyleSheet.create({
+    touchable: {
+        marginHorizontal: 12,
+        marginVertical: 8,
+    },
+    container: {
+        overflow: 'hidden',
+        borderRadius: 4,
+        transform: [{ skewX: '-10deg' }],
+    },
+    gradient: {
+        padding: 2,
+    },
+    content: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        padding: 8,
+    },
+    icon: {
+        color: '#FF0000',
+        fontSize: 24,
+        marginRight: 8,
+    },
+    text: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        textShadowColor: '#FF0000',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 4,
+    }
+});
 
 export default BackButton;

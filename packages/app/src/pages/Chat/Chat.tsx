@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, KeyboardAvoidingView, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, ScrollView, Dimensions, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Actions } from 'react-native-router-flux';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { View } from 'native-base';
 
 import { isiOS } from '../../utils/platform';
@@ -20,14 +21,23 @@ const { width, height } = Dimensions.get('window');
 let lastMessageIdCache = '';
 
 export default function Chat() {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
     const isLogin = useIsLogin();
     const self = useSelfId();
     const { focus } = useStore();
     const linkman = useFocusLinkman();
-    const $messageList = useRef<ScrollView>();
+    const $messageList = useRef<ScrollView>(null);
     const insets = useSafeAreaInsets();
 
     const keyboardOffset = insets.bottom + 44;
+
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
+    }, []);
 
     useEffect(() => {
         if (!linkman || !isLogin) return;
@@ -94,39 +104,61 @@ export default function Chat() {
 
     return (
         <PageContainer disableSafeAreaView>
-            <LinearGradient
-                colors={['rgba(0,0,0,0.8)', 'rgba(255,0,0,0.2)']}
-                style={styles.gradient}
-            >
-                <View style={styles.wrapper}>
-                    <KeyboardAvoidingView
-                        style={styles.container}
-                        behavior={isiOS ? 'padding' : 'height'}
-                        keyboardVerticalOffset={keyboardOffset}
+            <Animated.View style={[styles.wrapper, { opacity: fadeAnim }]}>
+                <BlurView intensity={20} tint="dark" style={styles.blurContainer}>
+                    <LinearGradient
+                        colors={['#FF0000', '#8B0000', '#000000']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.gradient}
                     >
-                        <MessageList $scrollView={$messageList} />
-                        <Input onHeightChange={scrollToEnd} />
-                    </KeyboardAvoidingView>
-                </View>
-            </LinearGradient>
+                        <View style={styles.container}>
+                            <KeyboardAvoidingView
+                                style={styles.keyboardAvoid}
+                                behavior={isiOS ? 'padding' : 'height'}
+                                keyboardVerticalOffset={keyboardOffset}
+                            >
+                                <MessageList $scrollView={$messageList} />
+                                <Input onHeightChange={scrollToEnd} />
+                            </KeyboardAvoidingView>
+                        </View>
+                    </LinearGradient>
+                </BlurView>
+            </Animated.View>
         </PageContainer>
     );
 }
 
 const styles = StyleSheet.create({
-    gradient: {
-        flex: 1,
-    },
     wrapper: {
         flex: 1,
         margin: 8,
-        borderRadius: 4,
-        borderWidth: 2,
-        borderColor: '#FF0000',
+    },
+    blurContainer: {
+        flex: 1,
+        borderRadius: 12,
         overflow: 'hidden',
-        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
+    gradient: {
+        flex: 1,
+        padding: 2,
     },
     container: {
         flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+        borderRadius: 10,
+        transform: [{ skewX: '-5deg' }],
+        shadowColor: '#FF0000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 8,
+        elevation: 10,
     },
+    keyboardAvoid: {
+        flex: 1,
+        transform: [{ skewX: '5deg' }],
+    }
 });

@@ -5,11 +5,14 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
+    Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import Triangle from '@react-native-toolkit/triangle';
-
 import { ActionSheet } from 'native-base';
 import { Actions } from 'react-native-router-flux';
+
 import Time from '../../utils/time';
 import Avatar from '../../components/Avatar';
 import { Message as MessageType } from '../../types/redux';
@@ -18,12 +21,7 @@ import ImageMessage from './ImageMessage';
 import TextMessage from './TextMessage';
 import { getRandomColor } from '../../utils/getRandomColor';
 import InviteMessage from './InviteMessage';
-import {
-    useFocus,
-    useIsAdmin,
-    useSelfId,
-    useTheme,
-} from '../../hooks/useStore';
+import { useFocus, useIsAdmin, useSelfId, useTheme } from '../../hooks/useStore';
 import { deleteMessage } from '../../service';
 import action from '../../state/action';
 
@@ -48,16 +46,30 @@ function Message({
     const isAdmin = useIsAdmin();
     const self = useSelfId();
     const focus = useFocus();
+    const slideAnim = React.useRef(new Animated.Value(-50)).current;
+    const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-    const couldDelete =
-        message.type !== 'system' && (isAdmin || message.from._id === self);
+    const couldDelete = message.type !== 'system' && (isAdmin || message.from._id === self);
 
     useEffect(() => {
+        Animated.parallel([
+            Animated.spring(slideAnim, {
+                toValue: 0,
+                tension: 20,
+                friction: 7,
+                useNativeDriver: true,
+            }),
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            })
+        ]).start();
+
         if (shouldScroll) {
             scrollToEnd();
         }
     }, []);
-
     async function handleDeleteMessage() {
         const options = ['Withdraw', 'Cancel'];
         ActionSheet.show(
@@ -149,108 +161,92 @@ function Message({
     }
 
     return (
-        <View style={[styles.container, isSelf && styles.containerSelf]}>
-            {isSelf ? (
-                <Avatar src={message.from.avatar} size={44} />
-            ) : (
-                <TouchableOpacity onPress={handleClickAvatar}>
-                    <Avatar src={message.from.avatar} size={44} />
-                </TouchableOpacity>
-            )}
-            <View style={[styles.info, isSelf && styles.infoSelf]}>
-                <View style={[styles.nickTime, isSelf && styles.nickTimeSelf]}>
-                    {!!message.from.tag && (
-                        <View
-                            style={[
-                                styles.tag,
-                                {
-                                    backgroundColor: getRandomColor(
-                                        message.from.tag,
-                                    ),
-                                },
-                            ]}
-                        >
-                            <Text style={styles.tagText}>
-                                {message.from.tag}
+        <Animated.View style={[
+            styles.container,
+            isSelf && styles.containerSelf,
+            {
+                opacity: fadeAnim,
+                transform: [
+                    { translateX: slideAnim },
+                    { skewX: '-5deg' }
+                ]
+            }
+        ]}>
+            <BlurView intensity={15} tint="dark" style={styles.messageContainer}>
+                <LinearGradient
+                    colors={['#FF0000', '#8B0000', '#000000']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.gradient}
+                >
+                    {isSelf ? (
+                        <Avatar src={message.from.avatar} size={44} />
+                    ) : (
+                        <TouchableOpacity onPress={handleClickAvatar}>
+                            <Avatar src={message.from.avatar} size={44} />
+                        </TouchableOpacity>
+                    )}
+                    <View style={[styles.info, isSelf && styles.infoSelf]}>
+                        <View style={[styles.nickTime, isSelf && styles.nickTimeSelf]}>
+                            {!!message.from.tag && (
+                                <View style={[styles.tag, { backgroundColor: getRandomColor(message.from.tag) }]}>
+                                    <Text style={styles.tagText}>{message.from.tag}</Text>
+                                </View>
+                            )}
+                            <Text style={[styles.nick, isSelf ? styles.nickSelf : styles.nickOther]}>
+                                {message.from.username}
+                            </Text>
+                            <Text style={[styles.time, isSelf && styles.timeSelf]}>
+                                {formatTime()}
                             </Text>
                         </View>
-                    )}
-                    <Text
-                        style={[
-                            styles.nick,
-                            isSelf ? styles.nickSelf : styles.nickOther,
-                        ]}
-                    >
-                        {message.from.username}
-                    </Text>
-                    <Text style={[styles.time, isSelf && styles.timeSelf]}>
-                        {formatTime()}
-                    </Text>
-                </View>
-                {couldDelete ? (
-                    <TouchableOpacity onLongPress={handleDeleteMessage}>
-                        <View
-                            style={[
-                                styles.content,
-                                {
-                                    backgroundColor: isSelf
-                                        ? primaryColor8
-                                        : 'white',
-                                },
-                            ]}
-                        >
-                            {renderContent()}
+                        {couldDelete ? (
+                            <TouchableOpacity onLongPress={handleDeleteMessage}>
+                                <View style={[styles.content, { backgroundColor: isSelf ? primaryColor8 : 'rgba(0,0,0,0.7)' }]}>
+                                    {renderContent()}
+                                </View>
+                            </TouchableOpacity>
+                        ) : (
+                            <View style={[styles.content, { backgroundColor: isSelf ? primaryColor8 : 'rgba(0,0,0,0.7)' }]}>
+                                {renderContent()}
+                            </View>
+                        )}
+                        <View style={[styles.triangle, isSelf ? styles.triangleSelf : styles.triangleOther]}>
+                            <Triangle
+                                type="isosceles"
+                                mode={isSelf ? 'right' : 'left'}
+                                base={10}
+                                height={5}
+                                color={isSelf ? primaryColor8 : 'rgba(0,0,0,0.7)'}
+                            />
                         </View>
-                    </TouchableOpacity>
-                ) : (
-                    <View
-                        style={[
-                            styles.content,
-                            {
-                                backgroundColor: isSelf
-                                    ? primaryColor8
-                                    : 'white',
-                            },
-                        ]}
-                    >
-                        {renderContent()}
                     </View>
-                )}
-                <View
-                    style={[
-                        styles.triangle,
-                        isSelf ? styles.triangleSelf : styles.triangleOther,
-                    ]}
-                >
-                    <Triangle
-                        type="isosceles"
-                        mode={isSelf ? 'right' : 'left'}
-                        base={10}
-                        height={5}
-                        color={isSelf ? primaryColor8 : 'white'}
-                    />
-                </View>
-            </View>
-        </View>
+                </LinearGradient>
+            </BlurView>
+        </Animated.View>
     );
 }
-
-export default React.memo(Message);
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        marginBottom: 6,
-        paddingLeft: 8,
-        paddingRight: 8,
+        marginBottom: 12,
+        paddingHorizontal: 12,
     },
     containerSelf: {
         flexDirection: 'row-reverse',
     },
+    messageContainer: {
+        borderRadius: 8,
+        overflow: 'hidden',
+    },
+    gradient: {
+        padding: 2,
+        flexDirection: 'row',
+    },
     info: {
         position: 'relative',
-        marginLeft: 8,
-        marginRight: 8,
+        marginHorizontal: 12,
         maxWidth: ScreenWidth - 120,
         alignItems: 'flex-start',
     },
@@ -259,13 +255,17 @@ const styles = StyleSheet.create({
     },
     nickTime: {
         flexDirection: 'row',
+        alignItems: 'center',
     },
     nickTimeSelf: {
         flexDirection: 'row-reverse',
     },
     nick: {
         fontSize: 13,
-        color: '#fff',
+        color: '#FFFFFF',
+        textShadowColor: '#FF0000',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 2,
     },
     nickSelf: {
         marginRight: 4,
@@ -275,22 +275,18 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 12,
-        color: '#666',
+        color: '#999',
         marginLeft: 4,
     },
     timeSelf: {
         marginRight: 4,
     },
     content: {
-        marginTop: 3,
+        marginTop: 6,
         borderRadius: 6,
-        padding: 5,
-        paddingLeft: 8,
-        paddingRight: 8,
-        backgroundColor: 'white',
+        padding: 8,
         minHeight: 26,
         minWidth: 20,
-        marginBottom: 6,
     },
     triangle: {
         position: 'absolute',
@@ -303,15 +299,16 @@ const styles = StyleSheet.create({
         left: -5,
     },
     tag: {
-        height: 14,
+        height: 16,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingLeft: 3,
-        paddingRight: 3,
+        paddingHorizontal: 4,
         borderRadius: 3,
     },
     tagText: {
         fontSize: 11,
-        color: 'white',
+        color: '#FFFFFF',
     },
 });
+
+export default React.memo(Message);

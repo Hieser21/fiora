@@ -7,17 +7,19 @@ import {
     Dimensions,
     TouchableOpacity,
     SafeAreaView,
+    Animated,
 } from 'react-native';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 import action from '../../state/action';
 import fetch from '../../utils/fetch';
 import { isiOS } from '../../utils/platform';
 import expressions from '../../utils/expressions';
-
 import Expression from '../../components/Expression';
 import { useIsLogin, useStore, useUser } from '../../hooks/useStore';
 import { Message } from '../../types/redux';
@@ -34,13 +36,31 @@ export default function Input({ onHeightChange }: Props) {
     const isLogin = useIsLogin();
     const user = useUser();
     const { focus } = useStore();
+    const slideAnim = React.useRef(new Animated.Value(0)).current;
 
     const [message, setMessage] = useState('');
     const [showFunctionList, toggleShowFunctionList] = useState(true);
     const [showExpression, toggleShowExpression] = useState(false);
     const [cursorPosition, setCursorPosition] = useState({ start: 0, end: 0 });
 
-    const $input = useRef<TextInput>();
+    const $input = useRef<TextInput>(null);
+
+    React.useEffect(() => {
+        if (showExpression) {
+            Animated.spring(slideAnim, {
+                toValue: 1,
+                tension: 20,
+                friction: 7,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [showExpression]);
 
     function setInputText(text = '') {
         // iossetNativeProps无效, 解决办法参考:https://github.com/facebook/react-native/issues/18272
@@ -139,27 +159,29 @@ export default function Input({ onHeightChange }: Props) {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ['images', 'videos', 'livePhotos'],
             base64: true,
         });
 
-        if (!result.cancelled) {
+        // Replace the existing result handling with:
+        if (!result.canceled && result.assets[0]) {
             const id = addSelfMessage(
                 'image',
-                `${result.uri}?width=${result.width}&height=${result.height}`,
+                `${result.assets[0].uri}?width=${result.assets[0].width}&height=${result.assets[0].height}`,
             );
             const key = `ImageMessage/${user._id}_${Date.now()}`;
             const imageUrl = await uploadFile(
-                result.base64 as string,
+                result.assets[0].base64 as string,
                 key,
                 true,
             );
             sendMessage(
                 id,
                 'image',
-                `${imageUrl}?width=${result.width}&height=${result.height}`,
+                `${imageUrl}?width=${result.assets[0].width}&height=${result.assets[0].height}`,
             );
         }
+
     }
 
     async function handleClickCamera() {
@@ -180,23 +202,25 @@ export default function Input({ onHeightChange }: Props) {
             base64: true,
         });
 
-        if (!result.cancelled) {
+        // Replace the existing result handling with:
+        if (!result.canceled && result.assets[0]) {
             const id = addSelfMessage(
                 'image',
-                `${result.uri}?width=${result.width}&height=${result.height}`,
+                `${result.assets[0].uri}?width=${result.assets[0].width}&height=${result.assets[0].height}`,
             );
             const key = `ImageMessage/${user._id}_${Date.now()}`;
             const imageUrl = await uploadFile(
-                result.base64 as string,
+                result.assets[0].base64 as string,
                 key,
                 true,
             );
             sendMessage(
                 id,
                 'image',
-                `${imageUrl}?width=${result.width}&height=${result.height}`,
+                `${imageUrl}?width=${result.assets[0].width}&height=${result.assets[0].height}`,
             );
         }
+
     }
 
     function handleChangeText(value: string) {
@@ -222,160 +246,130 @@ export default function Input({ onHeightChange }: Props) {
 
     return (
         <SafeAreaView style={styles.safeView}>
-            <View style={styles.container}>
-                {isLogin ? (
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            // @ts-ignore
-                            ref={$input}
-                            style={styles.input}
-                            placeholder="Just chat about anything, don't swipe the screen meaninglessly~~"
-                            onChangeText={handleChangeText}
-                            onSubmitEditing={handleSubmit}
-                            autoCapitalize="none"
-                            blurOnSubmit={false}
-                            maxLength={2048}
-                            returnKeyType="send"
-                            enablesReturnKeyAutomatically
-                            underlineColorAndroid="transparent"
-                            onSelectionChange={handleSelectionChange}
-                            onFocus={handleFocus}
-                        />
-                    </View>
-                ) : (
-                    <Button block style={styles.button} onPress={Actions.login}>
-                        <Text style={styles.buttonText}>
-                            Login / Register, Join the chat
-                        </Text>
-                    </Button>
-                )}
-                {isLogin && showFunctionList ? (
-                    <View style={styles.iconButtonContainer}>
-                        <Button
-                            transparent
-                            style={styles.iconButton}
-                            onPress={openExpression}
-                        >
-                            <Ionicons name="ios-happy" size={28} color="#999" />
-                        </Button>
-                        <Button
-                            transparent
-                            style={styles.iconButton}
-                            onPress={handleClickImage}
-                        >
-                            <Ionicons name="ios-image" size={28} color="#999" />
-                        </Button>
-                        <Button
-                            transparent
-                            style={styles.iconButton}
-                            onPress={handleClickCamera}
-                        >
-                            <Ionicons
-                                name="ios-camera"
-                                size={28}
-                                color="#999"
+            <BlurView intensity={15} tint="dark" style={styles.container}>
+                <LinearGradient
+                    colors={['#FF0000', '#8B0000', '#000000']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.gradient}
+                >
+                    {isLogin ? (
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                ref={$input}
+                                style={styles.input}
+                                placeholder="Just chat about anything..."
+                                placeholderTextColor="#666"
+                                onChangeText={handleChangeText}
+                                onSubmitEditing={handleSubmit}
+                                autoCapitalize="none"
+                                blurOnSubmit={false}
+                                maxLength={2048}
+                                returnKeyType="send"
+                                enablesReturnKeyAutomatically
+                                underlineColorAndroid="transparent"
+                                onSelectionChange={handleSelectionChange}
+                                onFocus={handleFocus}
                             />
+                        </View>
+                    ) : (
+                        <Button block style={styles.button} onPress={Actions.login}>
+                            <Text style={styles.buttonText}>
+                                Login / Register, Join the chat
+                            </Text>
                         </Button>
-                    </View>
-                ) : null}
-                {showExpression ? (
-                    <View style={styles.expressionContainer}>
-                        {expressions.default.map((e, i) => (
-                            <TouchableOpacity
-                                key={e}
-                                onPress={() => insertExpression(e)}
-                            >
-                                <View style={styles.expression}>
-                                    <Expression index={i} size={30} />
-                                </View>
+                    )}
+                    {isLogin && showFunctionList && (
+                        <View style={styles.iconButtonContainer}>
+                            <TouchableOpacity onPress={handleClickImage} style={styles.iconButton}>
+                                <Ionicons name="image" size={28} color="#FF0000" />
                             </TouchableOpacity>
-                        ))}
-                    </View>
-                ) : null}
-            </View>
+                            <TouchableOpacity onPress={handleClickCamera} style={styles.iconButton}>
+                                <Ionicons name="camera" size={28} color="#FF0000" />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    <Animated.View
+                        style={[
+                            styles.expressionContainer,
+                            {
+                                transform: [
+                                    {
+                                        translateY: slideAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [200, 0]
+                                        })
+                                    }
+                                ]
+                            }
+                        ]}
+                    >
+                        
+                    </Animated.View>
+                </LinearGradient>
+            </BlurView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     safeView: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: 'transparent',
     },
     container: {
-        paddingTop: 4,
+        borderRadius: 12,
+        overflow: 'hidden',
+        margin: 8,
+    },
+    gradient: {
+        padding: 2,
     },
     inputContainer: {
         flexDirection: 'row',
-        paddingLeft: 10,
-        paddingRight: 10,
+        padding: 10,
+        backgroundColor: 'rgba(0,0,0,0.7)',
     },
     input: {
         flex: 1,
         height: 36,
-        paddingLeft: 8,
-        paddingRight: 8,
-        backgroundColor: 'white',
+        paddingHorizontal: 8,
+        color: '#FFFFFF',
+        backgroundColor: 'rgba(255,255,255,0.1)',
         borderWidth: 1,
-        borderColor: '#e5e5e5',
+        borderColor: '#FF0000',
         borderRadius: 5,
-    },
-    sendButton: {
-        width: 50,
-        height: 36,
-        marginLeft: 8,
-        paddingLeft: 10,
+        transform: [{ skewX: '-5deg' }],
     },
     button: {
         height: 36,
-        marginTop: 4,
-        marginLeft: 10,
-        marginRight: 10,
-        marginBottom: 8,
+        margin: 10,
+        backgroundColor: '#FF0000',
+        transform: [{ skewX: '-5deg' }],
     },
     buttonText: {
-        color: 'white',
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
     },
-    iconContainer: {
-        height: 40,
-    },
-    icon: {
-        transform: [
-            {
-                // @ts-ignore
-                translate: [0, -3],
-            },
-        ],
-    },
-
     iconButtonContainer: {
         flexDirection: 'row',
-        paddingLeft: 15,
-        paddingRight: 15,
-        height: 44,
+        justifyContent: 'space-around',
+        padding: 10,
+        backgroundColor: 'rgba(0,0,0,0.7)',
     },
     iconButton: {
-        width: '15%',
+        padding: 8,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255,0,0,0.1)',
     },
-
-    cancelButton: {
-        borderTopWidth: 1,
-        borderTopColor: '#e6e6e6',
-    },
-    cancelButtonText: {
-        color: '#666',
-    },
-
-    // 表情框
     expressionContainer: {
         height: (isiOS ? 34 : 30) * 5 + 6,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        paddingTop: 3,
-        paddingBottom: 3,
-        paddingLeft: 8,
-        paddingRight: 8,
+        padding: 8,
+        backgroundColor: 'rgba(0,0,0,0.9)',
     },
-    expression: {
+    expressionButton: {
         width: ExpressionSize,
         height: isiOS ? 34 : 30,
         alignItems: 'center',
