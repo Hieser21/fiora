@@ -2,7 +2,7 @@ import React, { SyntheticEvent, useState, useMemo } from 'react';
 import { getOSSFileUrl } from '../utils/uploadFile';
 import { css } from 'linaria';
 
-export const avatarFailback = '/avatar/0.jpg';
+export const avatarFailback = '/avatar/0.png';
 
 const persona5Style = css`
     transition: all 0.3s ease;

@@ -68,7 +68,7 @@ function Admin(props: AdminProps) {
     }, [visible]);
 
     /**
-     * 处理更新用户标签
+     * Set user tag
      */
     async function handleSetTag() {
         const isSuccess = await setUserTag(tagUsername, tag.trim());
@@ -113,14 +113,14 @@ function Admin(props: AdminProps) {
     async function handleDisableSendMessage() {
         const isSuccess = await toggleSendMessage(false);
         if (isSuccess) {
-            Message.success('Successfully unbanned');
+            Message.success('Successfully muted');
             handleGetSystemConfig();
         }
     }
     async function handleEnableSendMessage() {
         const isSuccess = await toggleSendMessage(true);
         if (isSuccess) {
-            Message.success('Successfully closed ban');
+            Message.success('Successfully unmuted');
             handleGetSystemConfig();
         }
     }
@@ -178,7 +178,7 @@ function Admin(props: AdminProps) {
                             className={styles.button}
                             onClick={handleEnableNewUserSendMessage}
                         >
-                            Close new user ban
+                            Disable new user ban
                         </Button>
                     )}
                 </div>

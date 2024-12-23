@@ -52,11 +52,11 @@ function SelfInfo(props: SelfInfoProps) {
             const isSuccess = await changeAvatar(avatarUrl);
             if (isSuccess) {
                 action.setAvatar(URL.createObjectURL(blob));
-                Message.success('Modify the profile picture successfully');
+                Message.success('Modified the profile picture');
             }
         } catch (err) {
             console.error(err);
-            Message.error('上传头像失败');
+            Message.error('Failed to set avatar');
         } finally {
             toggleLoading(false);
             setCropper({ enable: false, src: '', ext: '' });
@@ -170,7 +170,7 @@ function SelfInfo(props: SelfInfoProps) {
                                     className={Style.button}
                                     onClick={handleChangeAvatar}
                                 >
-                                    Modify avatar
+                                    Modify
                                 </Button>
                                 <ReactLoading
                                     className={`${Style.loading} ${
@@ -204,7 +204,7 @@ function SelfInfo(props: SelfInfoProps) {
                     </div>
                 </div>
                 <div className={Common.block}>
-                    <p className={Common.title}>change Password</p>
+                    <p className={Common.title}>Change Password</p>
                     <div>
                         <Input
                             className={Style.input}
@@ -224,12 +224,12 @@ function SelfInfo(props: SelfInfoProps) {
                             className={Style.button}
                             onClick={handleChangePassword}
                         >
-                            Confirm the changes
+                            Confirm
                         </Button>
                     </div>
                 </div>
                 <div className={Common.block}>
-                    <p className={Common.title}>modify username</p>
+                    <p className={Common.title}>Modify username</p>
                     <div>
                         <Input
                             className={Style.input}
@@ -242,7 +242,7 @@ function SelfInfo(props: SelfInfoProps) {
                             className={Style.button}
                             onClick={handleChangeUsername}
                         >
-                            Confirm the changes
+                            Confirm
                         </Button>
                     </div>
                 </div>

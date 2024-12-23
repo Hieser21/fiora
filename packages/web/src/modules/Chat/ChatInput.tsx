@@ -594,33 +594,9 @@ function ChatInput() {
         <div className={Style.chatInput} {...aero}>
             <Dropdown
                 trigger={['click']}
-                visible={expressionDialog}
-                onVisibleChange={toggleExpressionDialog}
-                overlay={
-                    <div className={Style.expressionDropdown}>
-                        <ExpressionAsync
-                            onSelectText={handleSelectExpression}
-                            onSelectImage={sendImageMessage}
-                        />
-                    </div>
-                }
-                animation="slide-up"
-                placement="topLeft"
-            >
-                <IconButton
-                    className={Style.iconButton}
-                    width={44}
-                    height={44}
-                    icon="expression"
-                    iconSize={32}
-                />
-            </Dropdown>
-            <Dropdown
-                trigger={['click']}
                 overlay={
                     <div className={Style.featureDropdown}>
                         <Menu onClick={handleFeatureMenuClick}>
-                            <MenuItem key="huaji">send funny</MenuItem>
                             <MenuItem key="image">send pictures</MenuItem>
                             <MenuItem key="code">send code</MenuItem>
                             <MenuItem key="file">send file</MenuItem>

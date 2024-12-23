@@ -19,7 +19,7 @@ function convertSystemMessage(message: any) {
     if (message.type === 'system') {
         message.from._id = 'system';
         message.from.originUsername = message.from.username;
-        message.from.username = 'Her Majesty the Squid Girl';
+        message.from.username = 'Morgana';
         message.from.avatar = WuZeiNiangImage;
         message.from.tag = 'system';
 
@@ -41,10 +41,10 @@ function convertSystemMessage(message: any) {
         message.type = 'system';
         message.from._id = 'system';
         message.from.originUsername = message.from.username;
-        message.from.username = '乌贼娘殿下';
+        message.from.username = 'Morgana';
         message.from.avatar = WuZeiNiangImage;
         message.from.tag = 'system';
-        message.content = `撤回了消息`;
+        message.content = `Deleted message`;
     }
 }
 

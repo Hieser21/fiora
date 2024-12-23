@@ -2,6 +2,8 @@
 
 .codeEditor {
     width: 600px;
+    border: 2px solid #ff0000;
+    box-shadow: 5px 5px 0px #ff0000;
 
     @media @mobile {
         width: 100%;
@@ -11,6 +13,7 @@
     :global {
         .rc-dialog-body {
             overflow-y: hidden;
+            background-color: rgba(0, 0, 0, 0.95);
         }
     }
 }
@@ -19,34 +22,69 @@
     height: 55vh;
     display: flex;
     flex-direction: column;
+    background: linear-gradient(45deg, #1a1a1a 25%, #2b2b2b 25%, #2b2b2b 50%, #1a1a1a 50%, #1a1a1a 75%, #2b2b2b 75%, #2b2b2b 100%);
+    background-size: 10px 10px;
+    padding: 15px;
 }
 
 .selectContainer {
     display: flex;
     align-items: center;
+    margin-bottom: 15px;
+    transform: skew(-5deg);
 }
 
 .languageSelect {
     width: 150px;
     margin-left: 10px;
+    background: #2b2b2b;
+    border: 2px solid #ff0000;
+    color: #ff0000;
+    
+    &:focus {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
 }
 
 .title {
     font-size: 14px;
-    font-weight: normal;
-    color: #666;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px #ff0000;
+    letter-spacing: 1px;
 }
 
 .editorContainer {
     flex: 1;
     margin-top: 10px;
-    border: 1px solid #f1f1f1;
+    border: 2px solid #ff0000;
     border-radius: 2px;
+    background: rgba(43, 43, 43, 0.9);
+    transform: skew(-2deg);
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+    }
 }
 
 .sendButton {
-    width: 100px;
-    height: 32px;
-    margin-top: 8px;
+    width: 120px;
+    height: 38px;
+    margin-top: 12px;
     align-self: flex-end;
+    background: #2b2b2b;
+    color: #ff0000;
+    border: 2px solid #ff0000;
+    transform: skew(-5deg);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    &:hover {
+        background: #ff0000;
+        color: #ffffff;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        transform: skew(-5deg) scale(1.05);
+    }
 }

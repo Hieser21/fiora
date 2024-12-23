@@ -90,7 +90,7 @@ function Setting(props: SettingProps) {
             window.localStorage.removeItem(LocalStorageKey.PrimaryTextColor);
             window.localStorage.removeItem(LocalStorageKey.BackgroundImage);
             window.localStorage.removeItem(LocalStorageKey.Aero);
-            Message.success('Modified topic');
+            Message.success('Setting changed');
         } else {
             window.localStorage.setItem(
                 LocalStorageKey.PrimaryColor,
@@ -205,7 +205,7 @@ function Setting(props: SettingProps) {
                                 </div>
                                 <div className={Style.switch}>
                                     <p className={Style.switchText}>
-                                        broadcast own news
+                                        Broadcase own message
                                     </p>
                                     <Switch
                                         onChange={(value) =>
@@ -217,7 +217,7 @@ function Setting(props: SettingProps) {
                                         checked={selfVoiceSwitch}
                                     />
                                 </div>
-                                <div className={Style.switch}>
+                                {/* <div className={Style.switch}>
                                     <p className={Style.switchText}>
                                         Recommend emoticons based on input content
                                     </p>
@@ -230,11 +230,11 @@ function Setting(props: SettingProps) {
                                         }
                                         checked={enableSearchExpression}
                                     />
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div className={Common.block}>
-                            <p className={Common.title}>presentation sound</p>
+                            <p className={Common.title}>Notification sound</p>
                             <div>
                                 <RadioGroup
                                     className={Style.radioGroup}
@@ -254,7 +254,7 @@ function Setting(props: SettingProps) {
                                     <RadioButton value="mobileqq">
                                         Mobile QQ
                                     </RadioButton>
-                                    <RadioButton value="momo">陌陌</RadioButton>
+                                    <RadioButton value="momo">Momo</RadioButton>
                                     <RadioButton value="huaji">
                                         funny
                                     </RadioButton>

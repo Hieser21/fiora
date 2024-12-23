@@ -91,7 +91,7 @@ export async function joinGroup(ctx: Context<{ groupId: string }>) {
     if (!group) {
         throw new AssertionError({ message: 'Failed to join the group, the group does not exist' });
     }
-    assert(group.members.indexOf(ctx.socket.user) === -1, 'you are already in the group');
+    assert(group.members.indexOf(ctx.socket.user) === -1, 'You are already in the group');
 
     group.members.push(ctx.socket.user);
     await group.save();

@@ -1,37 +1,87 @@
 .admin {
-    // height: 50% !important;
+    background: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+    background-size: 10px 10px;
+    border: 2px solid #ff0000;
+    padding: 20px;
+    transform: skew(-2deg);
 }
 
 .inputBlock {
     display: flex;
+    margin-bottom: 15px;
+    transform: skew(2deg);
 }
 
 .input {
     flex: 1;
     height: 36px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff0000;
+    color: #ffffff;
+    padding: 0 15px;
+    font-family: 'Arial Black', sans-serif;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+
+    &:focus {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
 }
 
 .tagUsernameInput {
     flex: 3;
+    display: block !important;
+    margin-right: 10px;
+    transform: skew(-1deg);
 }
 
 .tagInput {
     flex: 2;
     margin-left: 6px;
+    transform: skew(-1deg);
 }
 
 .button {
     width: 100px;
     height: 36px;
     margin-left: 10px;
+    background: #ff0000;
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+
+    &:hover {
+        background: #ffffff;
+        color: #ff0000;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        transform: scale(1.05);
+    }
 }
 
 .sealList {
     min-height: 22px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border-left: 3px solid #ff0000;
+    transform: skew(2deg);
 }
 
 .sealUsername {
     margin-right: 10px;
     line-height: 22px;
     font-size: 14px;
+    color: #ffffff;
+    text-shadow: 2px 2px rgba(255, 0, 0, 0.5);
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(255, 0, 0, 0.1);
+    transition: all 0.3s;
+
+    &:hover {
+        transform: scale(1.1);
+        background: rgba(255, 0, 0, 0.2);
+    }
 }

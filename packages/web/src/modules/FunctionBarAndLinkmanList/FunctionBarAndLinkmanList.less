@@ -5,33 +5,63 @@
     height: 100%;
     position: relative;
     display: flex;
-    background-color: unset;
+    background: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+    background-size: 10px 10px;
+    border-right: 3px solid #ff0000;
+    box-shadow: 5px 0 15px rgba(255, 0, 0, 0.2);
 
     @media @mobile {
         position: absolute;
         left: 0;
         z-index: 1;
         width: 100%;
-        background-color: rgba(37, 37, 37, 0.5);
+        animation: slideIn 0.3s ease-out;
 
         .container {
-            background-color: var(--primary-color-7);
+            background: rgba(0, 0, 0, 0.95);
+            border-right: 3px solid #ff0000;
         }
     }
 }
 
 .container {
-    background-color: var(--primary-color-5);
+    background: rgba(0, 0, 0, 0.9);
     flex: 1;
     max-width: 300px;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease;
 
     &[data-aero=true] {
-        background-color: var(--primary-color-0);
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2);
     }
 
+
     @media @mobile {
-        background-color: var(--primary-color-7);
+        background: rgba(0, 0, 0, 0.95);
+        transform: none;
+        
+        &:hover {
+            transform: none;
+        }
     }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); }
+    50% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); }
 }

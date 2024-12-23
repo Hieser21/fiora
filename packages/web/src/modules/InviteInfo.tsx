@@ -74,7 +74,7 @@ function InviteInfo() {
             className={Style.infoDialog}
             visible={visible}
             onClose={handleClose}
-            title="邀请您加入群组"
+            title="You are invited to join the group."
         >
             {visible && group && (
                 <div className={Style.coantainer}>

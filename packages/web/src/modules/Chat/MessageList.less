@@ -8,8 +8,52 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     position: relative;
+    background: linear-gradient(45deg, #1a1a1a 25%, #2b2b2b 25%, #2b2b2b 50%, #1a1a1a 50%, #1a1a1a 75%, #2b2b2b 75%, #2b2b2b 100%);
+    background-size: 10px 10px;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        background: #1a1a1a;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #ff0000;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #2b2b2b;
+        border-radius: 4px;
+    }
 
     @media @mobile {
         padding: 8px 6px 0 6px;
+    }
+
+    .message {
+        transform: skew(-2deg);
+        margin-bottom: 10px;
+        padding: 8px;
+        border: 2px solid #ff0000;
+        background: rgba(0, 0, 0, 0.8);
+        box-shadow: 3px 3px 0 #ff0000;
+        transition: all 0.3s;
+
+        &:hover {
+            transform: skew(-2deg) scale(1.02);
+            box-shadow: 5px 5px 0 #ff0000;
+        }
+    }
+
+    .messageText {
+        color: #ffffff;
+        text-shadow: 1px 1px #ff0000;
+    }
+
+    .messageTime {
+        color: #ff0000;
+        font-size: 12px;
+        margin-left: 8px;
     }
 }

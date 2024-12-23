@@ -142,7 +142,7 @@ function GroupManagePanel(props: GroupManagePanelProps) {
                                 className={Style.button}
                                 onClick={handleChangeGroupName}
                             >
-                                Confirm the changes
+                                Confirm
                             </Button>
                         </div>
                     ) : null}
@@ -152,7 +152,7 @@ function GroupManagePanel(props: GroupManagePanelProps) {
                             <img
                                 className={Style.avatar}
                                 src={getOSSFileUrl(avatar)}
-                                alt="群头像预览"
+                                alt="Group Avatar"
                                 onClick={handleChangeGroupAvatar}
                             />
                         </div>
@@ -166,7 +166,7 @@ function GroupManagePanel(props: GroupManagePanelProps) {
                                 type="danger"
                                 onClick={() => setDialogStatus(true)}
                             >
-                                Disband group
+                                Disband
                             </Button>
                         ) : (
                             <Button
@@ -234,7 +234,7 @@ function GroupManagePanel(props: GroupManagePanelProps) {
                             type="danger"
                             onClick={handleDeleteGroup}
                         >
-                            确认
+                            Proceed
                         </Button>
                         <Button
                             className={Style.deleteGroupConfirmButton}

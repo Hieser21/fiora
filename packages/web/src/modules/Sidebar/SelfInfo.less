@@ -1,22 +1,36 @@
 .selfInfo {
     height: initial !important;
     width: 500px;
+    background: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+    background-size: 10px 10px;
+    border: 2px solid #ff0000;
+    box-shadow: 5px 5px 0 #ff0000;
+    transform: skew(-2deg);
 }
 
 .changeAvatar {
     position: relative;
+    transform: skew(2deg);
+    
     .blur {
         filter: blur(2px);
+        transition: all 0.3s;
+        &:hover {
+            filter: blur(4px);
+        }
     }
 }
 
 .cropper {
     & > div {
         margin-bottom: 8px;
+        border: 2px solid #ff0000;
     }
     .loading {
         top: 170px;
         left: 170px;
+        color: #ff0000;
+        animation: pulse 2s infinite;
     }
 }
 
@@ -25,14 +39,19 @@
         width: 100px;
         height: 100px;
         cursor: pointer;
+        border: 2px solid #ff0000;
+        transition: all 0.3s;
 
         &:hover {
             filter: blur(3px);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
         }
     }
     .loading {
         top: 10px;
         left: 10px;
+        color: #ff0000;
     }
 }
 
@@ -44,9 +63,40 @@
 .input {
     height: 36px;
     margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff0000;
+    color: #ffffff;
+    padding: 0 15px;
+    font-family: 'Arial Black', sans-serif;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+
+    &:focus {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
 }
 
 .button {
     width: 100px;
     height: 36px;
+    background: #ff0000;
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+
+    &:hover {
+        background: #ffffff;
+        color: #ff0000;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
 }

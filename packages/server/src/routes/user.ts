@@ -97,7 +97,7 @@ export async function register(
     const registeredCountWithin24Hours = await Redis.get(
         getNewRegisteredUserIpKey(ctx.socket.ip),
     );
-    assert(parseInt(registeredCountWithin24Hours || '0', 10) < 3, '系统错误');
+    assert(parseInt(registeredCountWithin24Hours || '0', 10) < 3, 'System Error');
 
     const defaultGroup = await Group.findOne({ isDefault: true });
     if (!defaultGroup) {
@@ -527,12 +527,12 @@ export async function setUserTag(
     assert(tag !== '', 'tag cannot be empty');
     assert(
         /^([0-9a-zA-Z]{1,2}|[\u4e00-\u9eff]){1,5}$/.test(tag),
-        '标签不符合要求, 允许5个汉字或者10个字母',
+        'The tag does not meet the requirements. Only 10 letters are allowed.',
     );
 
     const user = await User.findOne({ username });
     if (!user) {
-        throw new AssertionError({ message: '用户不存在' });
+        throw new AssertionError({ message: 'User does not exist' });
     }
 
     user.tag = tag;

@@ -4,14 +4,16 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: rgba(241, 241, 241, 0.6);
+    background-color: rgba(0, 0, 0, 0.9);
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     overflow: hidden;
     position: relative;
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
 
     &[data-aero=true] {
-        background-color: rgba(241, 241, 241, 0.15);
+        background-color: rgba(0, 0, 0, 0.85);
     }
 
     @media @mobile {
@@ -26,6 +28,8 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background: linear-gradient(45deg, #1a1a1a 25%, #2b2b2b 25%, #2b2b2b 50%, #1a1a1a 50%, #1a1a1a 75%, #2b2b2b 75%, #2b2b2b 100%);
+    background-size: 10px 10px;
 }
 
 .noLinkmanImage {
@@ -34,10 +38,22 @@
     height: 180px;
     background-image: url('~@fiora/assets/images/no-linkman.jpeg');
     background-position-y: 180px;
+    border: 3px solid #ff0000;
+    transform: skew(-5deg);
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: skew(-5deg) scale(1.05);
+    }
 }
 
 .noLinkmanText {
     margin-top: 16px;
     font-size: 14px;
-    color: #666;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    text-shadow: 2px 2px #ff0000;
+    letter-spacing: 1px;
+    transform: skew(-5deg);
 }

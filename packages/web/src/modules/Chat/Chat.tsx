@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
+import { css } from 'linaria';
 import Style from './Chat.less';
 import HeaderBar from './HeaderBar';
 import MessageList from './MessageList';
@@ -17,6 +17,37 @@ import {
 import useAction from '../../hooks/useAction';
 import useAero from '../../hooks/useAero';
 import store from '../../state/store';
+const persona5Styles = css`
+    .persona-panel {
+        background: rgba(0, 0, 0, 0.95);
+        border: 2px solid #ff0000;
+        box-shadow: 5px 5px 0px #ff0000;
+        transform: skew(-2deg);
+        transition: all 0.3s ease;
+    }
+
+    .persona-text {
+        color: #ffffff;
+        font-family: 'Arial', sans-serif;
+        text-shadow: 2px 2px #ff0000;
+        letter-spacing: 1px;
+    }
+
+    .persona-button {
+        background: #2b2b2b;
+        color: #ff0000;
+        border: 2px solid #ff0000;
+        padding: 8px 16px;
+        transform: skew(-5deg);
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: #ff0000;
+            color: #ffffff;
+            transform: skew(-5deg) scale(1.05);
+        }
+    }
+`;
 
 let lastMessageIdCache = '';
 
@@ -143,10 +174,10 @@ function Chat() {
     }
 
     return (
-        <div className={Style.chat} {...aero}>
+        <div className={`${Style.chat} ${persona5Styles}`} {...aero}>
             <HeaderBar
                 id={linkman._id}
-                name={linkman.name}
+                name={linkman.name.toLocaleUpperCase()}
                 type={linkman.type}
                 onlineMembersCount={linkman.onlineMembers?.length}
                 isOnline={linkman.isOnline}
@@ -157,6 +188,7 @@ function Chat() {
 
             {linkman.type === 'group' && (
                 <GroupManagePanel
+                    className="persona-panel"
                     visible={groupManagePanel}
                     onClose={() => toggleGroupManagePanel(false)}
                     groupId={linkman._id}

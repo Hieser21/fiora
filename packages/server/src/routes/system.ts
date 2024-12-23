@@ -179,9 +179,9 @@ export async function getSealList() {
     return result;
 }
 
-const CantSealLocalIp = '不能封禁内网ip';
-const CantSealSelf = '闲的没事封自己干啥';
-const IpInSealList = 'ip已在封禁名单';
+const CantSealLocalIp = 'Can\'t add IP to ban list';
+const CantSealSelf = 'Can\'t ban your own IP';
+const IpInSealList = 'IP already in ban list';
 
 /**
  * 封禁 ip 地址, 需要管理员权限

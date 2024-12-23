@@ -2,6 +2,12 @@
 
 .infoDialog {
     width: 300px !important;
+    transform: skew(-2deg);
+    background: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+    background-size: 10px 10px;
+    border: 2px solid #ff0000;
+    box-shadow: 5px 5px 0 #ff0000;
+
     @media @mobile {
         width: 80% !important;
     }
@@ -16,23 +22,33 @@
     }
 }
 
-.coantainer {
+.container {
     text-align: center;
+    transform: skew(2deg);
 }
 
 .header {
-    background-color: rgb(240, 242, 245);
+    background: rgba(0, 0, 0, 0.8);
     padding: 20px 0 14px 0;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-top: 2px solid #ff0000;
+    border-bottom: 2px solid #ff0000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
 }
 
 .ip {
     span {
         font-size: 13px;
-        color: #888;
+        color: #ff0000;
         margin: 0 2px;
         cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff0000;
+        }
     }
 }
 
@@ -43,6 +59,13 @@
     width: 300px;
     height: 300px;
     z-index: 9999;
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    transition: all 0.3s;
+
+    &:hover {
+        transform: scale(1.05);
+    }
 
     @media @mobile {
         width: 180px;
@@ -58,6 +81,19 @@
         width: 100%;
         height: 34px;
         margin-top: 10px;
+        background: #ff0000;
+        color: #ffffff;
+        border: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+
+        &:hover {
+            background: #ffffff;
+            color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            transform: scale(1.05);
+        }
     }
 }
 
@@ -67,9 +103,22 @@
     height: 30px;
     align-items: center;
     font-size: 14px;
+    background: rgba(0, 0, 0, 0.7);
+    border-left: 3px solid #ff0000;
+    padding: 0 10px;
+    margin: 5px 0;
+    transition: all 0.3s;
+
+    &:hover {
+        background: rgba(255, 0, 0, 0.1);
+        transform: translateX(5px);
+    }
 }
 
 .onlineText {
     width: 50px;
-    color: #666;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px rgba(255, 0, 0, 0.3);
 }

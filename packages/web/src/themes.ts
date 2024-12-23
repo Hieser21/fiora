@@ -12,14 +12,14 @@ type Themes = {
 
 const themes: Themes = {
     default: {
-        primaryColor: '74, 144, 226',
-        primaryTextColor: '247, 247, 247',
+        primaryColor: '255, 0, 0',  // Vibrant Persona 5 red
+        primaryTextColor: '255, 255, 255', // Sharp white text
         backgroundImage: BackgroundImage,
         aero: false,
     },
     cool: {
-        primaryColor: '5,159,149',
-        primaryTextColor: '255, 255, 255',
+        primaryColor: '6, 147, 227',  // Sky blue
+        primaryTextColor: '240, 248, 255', // Alice blue
         backgroundImage: BackgroundCoolImage,
         aero: false,
     },

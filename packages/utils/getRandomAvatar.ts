@@ -6,12 +6,12 @@ const publicPath = process.env.PublicPath || '/';
  */
 export default function getRandomAvatar() {
     const number = Math.floor(Math.random() * AvatarCount);
-    return `${publicPath}avatar/${number}.jpg`;
+    return `${publicPath}avatar/${number}.png`;
 }
 
 /**
  * 获取默认头像
  */
 export function getDefaultAvatar() {
-    return `${publicPath}avatar/0.jpg`;
+    return `${publicPath}avatar/0.png`;
 }

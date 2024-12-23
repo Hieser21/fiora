@@ -2,34 +2,37 @@
 
 .chatInput {
     height: 70px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     padding: 0px 20px;
     border-bottom-right-radius: 10px;
     position: relative;
+    border-top: 2px solid #ff0000;
 
     &[data-aero='true'] {
-        background-color: rgba(255, 255, 255, 0.15);
+        background-color: rgba(0, 0, 0, 0.85);
 
         .input {
-            background-color: rgba(255, 255, 255, 0.6);
-            border: none;
+            background-color: rgba(43, 43, 43, 0.9);
+            border: 2px solid #ff0000;
+            color: #ffffff;
             &::placeholder {
-                color: #888;
+                color: #ff0000;
             }
         }
 
         .iconButton {
             :global {
                 .iconfont {
-                    color: var(--primary-text-color-8);
+                    color: #ff0000;
                 }
             }
             &:hover {
                 :global {
                     .iconfont {
-                        color: var(--primary-color-10);
+                        color: #ffffff;
+                        text-shadow: 0 0 10px #ff0000;
                     }
                 }
             }
@@ -37,11 +40,10 @@
     }
 
     @media @mobile {
-        height: 50px;
-        padding: 0 6px;
-        border-bottom-right-radius: 0px;
         height: calc(50px + env(safe-area-inset-bottom));
+        padding: 0 6px;
         padding-bottom: env(safe-area-inset-bottom);
+        border-bottom-right-radius: 0;
     }
 }
 
@@ -50,21 +52,28 @@
     display: flex;
     position: relative;
     margin: 0 10px;
+    transform: skew(-5deg);
 }
 
 .input {
     flex: 1;
-    padding: 0px 8px;
-    height: 32px;
-    line-height: 32px;
+    padding: 0px 12px;
+    height: 38px;
+    line-height: 38px;
     outline: none;
-    border: 1px solid rgba(208, 208, 208, 0.5);
+    border: 2px solid #ff0000;
+    background: rgba(43, 43, 43, 0.9);
     font-size: 14px;
-    color: #666;
+    color: #ffffff;
     user-select: auto;
+    transition: all 0.3s ease;
 
     &::placeholder {
-        color: #999;
+        color: #ff0000;
+    }
+
+    &:focus {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
     }
 }
 
@@ -73,45 +82,59 @@
     right: 10px;
     top: 5px;
     font-size: 22px;
-    color: #aaa;
+    color: #ff0000;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
 .iconButton {
     :global {
         .iconfont {
-            color: #aaa;
+            color: #ff0000;
+            transition: all 0.3s ease;
         }
     }
 
     &:hover {
         :global {
             .iconfont {
-                color: var(--primary-color-10);
+                color: #ffffff;
+                transform: scale(1.1);
+                text-shadow: 0 0 10px #ff0000;
             }
         }
     }
 }
 
 .guest {
-    color: #333;
+    color: #ffffff;
     user-select: none;
     font-size: 14px;
     flex: 1;
     text-align: center;
     letter-spacing: 1px;
+    text-shadow: 2px 2px #ff0000;
 }
 
 .guestLogin {
-    color: var(--primary-color-10);
+    color: #ff0000;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+    &:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px #ff0000;
+    }
 }
 
 .expressionDropdown {
     width: 415px;
     height: 240px;
-    background-color: white;
-    transform: translateY(-8px);
+    background-color: rgba(0, 0, 0, 0.95);
+    transform: translateY(-8px) skew(-5deg);
+    border: 2px solid #ff0000;
+    box-shadow: 5px 5px 0px #ff0000;
 
     @media @mobile {
         width: 100%;
@@ -119,20 +142,28 @@
 }
 
 .featureDropdown {
-    background-color: white;
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 2px solid #ff0000;
 
     :global {
         .rc-menu {
             padding: 6px 0;
+            background: transparent;
         }
         .rc-menu-item {
             padding: 12px 20px !important;
+            color: #ff0000;
+            &:hover {
+                background: #ff0000;
+                color: #ffffff;
+            }
         }
     }
 }
 
 .atPanel {
-    background-color: white;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.95);
     position: absolute;
     left: 120px;
     bottom: 60px;
@@ -140,7 +171,8 @@
     border-radius: 3px;
     max-height: 266px;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    border: 2px solid #ff0000;
+    transform: skew(-5deg);
 }
 
 .atUserList {
@@ -151,12 +183,14 @@
     height: 30px;
     padding: 0 8px;
     min-width: 120px;
+    transition: all 0.2s ease;
 
     &:last-child {
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
     &:hover {
-        background-color: var(--primary-color-4);
+        background-color: #ff0000;
+        color: #ffffff;
     }
 }
 
@@ -164,5 +198,5 @@
     font-size: 14px;
     margin-left: 6px;
     margin-top: 4px;
-    color: #444;
+    color: #ff0000;
 }

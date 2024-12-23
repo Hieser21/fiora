@@ -112,55 +112,7 @@ function Sidebar() {
                                 onClick={() => toggleAdminDialogVisible(true)}
                             />,
                         )}
-                    <Tooltip
-                        placement="right"
-                        mouseEnterDelay={0.3}
-                        overlay={<span>Original source</span>}
-                    >
-                        <a
-                            className={Style.linkButton}
-                            href="https://github.com/yinxin630/fiora"
-                            target="_black"
-                            rel="noopener noreferrer"
-                        >
-                            <IconButton
-                                width={40}
-                                height={40}
-                                icon="github"
-                                iconSize={26}
-                            />
-                        </a>
-                    </Tooltip>
-                    {renderTooltip(
-                        'Download App',
-                        <IconButton
-                            width={40}
-                            height={40}
-                            icon="app"
-                            iconSize={28}
-                            onClick={() => toggleDownloadDialogVisible(true)}
-                        />,
-                    )}
-                    {renderTooltip(
-                        'Reward',
-                        <IconButton
-                            width={40}
-                            height={40}
-                            icon="dashang"
-                            iconSize={26}
-                            onClick={() => toggleRewardDialogVisible(true)}
-                        />,
-                    )}
-                    {renderTooltip(
-                        'About',
-                        <IconButton
-                            width={40}
-                            height={40}
-                            icon="about"
-                            iconSize={26}
-                            onClick={() => toggleAboutDialogVisible(true)}
-                        />,
-                    )}
+                   
                     {isLogin &&
                         renderTooltip(
                             'Settings',
@@ -198,18 +150,7 @@ function Sidebar() {
                         onClose={() => toggleAdminDialogVisible(false)}
                     />
                 )}
-                <Download
-                    visible={downloadDialogVisible}
-                    onClose={() => toggleDownloadDialogVisible(false)}
-                />
-                <Reward
-                    visible={rewardDialogVisible}
-                    onClose={() => toggleRewardDialogVisible(false)}
-                />
-                <About
-                    visible={aboutDialogVisible}
-                    onClose={() => toggleAboutDialogVisible(false)}
-                />
+               
                 {isLogin && settingDialogVisible && (
                     <SettingAsync
                         visible={settingDialogVisible}
