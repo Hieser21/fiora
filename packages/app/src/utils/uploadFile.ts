@@ -12,8 +12,8 @@ export async function initOSS() {
     );
     supabaseClient = supabase;
     
-    if (config.default.supabase.url) {
-        endpoint = `${config.default.supabase.url}/`;
+    if (supabase) {
+        endpoint = `https://pktxkdhuqdoxmtnwdirz.supabase.co/`;
     }
 
     // Refresh token handling if needed

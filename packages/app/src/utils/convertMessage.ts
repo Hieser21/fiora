@@ -53,7 +53,7 @@ function convertSystemMessage(message: Message) {
         message.from.username = 'systen';
         message.from.avatar = WuZeiNiangImage;
         message.from.tag = 'system';
-        message.content = `retracted message
+        message.content = `Deleted message
         `;
     }
 
