@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Keyboard, Modal, Image } from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import { ScrollView, StyleSheet, Keyboard, Modal, Image, Animated } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
+import ImageView from 'react-native-image-viewing';
+
 
 import action from '../../state/action';
 import fetch from '../../utils/fetch';
@@ -16,6 +19,14 @@ import { Message as MessageType } from '../../types/redux';
 import Toast from '../../components/Toast';
 import { isAndroid, isiOS } from '../../utils/platform';
 import { referer } from '../../utils/constant';
+
+
+const PERSONA_COLORS = {
+    primary: '#FF0000',
+    secondary: '#000000', 
+    accent: '#FFFFFF',
+    overlay: 'rgba(0,0,0,0.8)'
+};
 
 type Props = {
     $scrollView: React.MutableRefObject<ScrollView>;
@@ -38,7 +49,15 @@ function MessageList({ $scrollView }: Props) {
         false,
     );
     const [imageViewerIndex, setImageViewerIndex] = useState(0);
+    const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true
+        }).start();
+    }, []);
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardWillShow',
@@ -180,14 +199,26 @@ function MessageList({ $scrollView }: Props) {
 
     function renderMessage(message: MessageType) {
         return (
-            <Message
-                key={message._id}
-                message={message}
-                isSelf={self === message.from._id}
-                shouldScroll={shouldScroll}
-                scrollToEnd={scrollToEnd}
-                openImageViewer={openImageViewer}
-            />
+            <Animated.View 
+                style={[
+                    styles.messageWrapper,
+                    { opacity: fadeAnim }
+                ]}
+            >
+                <LinearGradient
+                    colors={[PERSONA_COLORS.secondary, PERSONA_COLORS.primary]}
+                    style={styles.messageGradient}
+                >
+                    <Message
+                        key={message._id}
+                        message={message}
+                        isSelf={self === message.from._id}
+                        shouldScroll={shouldScroll}
+                        scrollToEnd={scrollToEnd}
+                        openImageViewer={openImageViewer}
+                    />
+                </LinearGradient>
+            </Animated.View>
         );
     }
 
@@ -196,48 +227,47 @@ function MessageList({ $scrollView }: Props) {
     }
 
     return (
-        <ScrollView
-            style={styles.container}
-            ref={$scrollView}
-            onContentSizeChange={handleContentSizeChange}
-            scrollEventThrottle={50}
-            onScroll={handleScroll}
-        >
-            {messages.map((message) => renderMessage(message))}
-            <Modal
-                visible={showImageViewerDialog}
-                transparent
-                onRequestClose={closeImageViewerDialog}
+        <BlurView intensity={20} tint="dark" style={styles.container}>
+            <ScrollView
+                style={styles.scrollView}
+                ref={$scrollView}
+                onContentSizeChange={handleContentSizeChange}
+                scrollEventThrottle={50}
+                onScroll={handleScroll}
             >
-                <ImageViewer
-                    imageUrls={getImages()}
-                    index={imageViewerIndex}
-                    onClick={closeImageViewerDialog}
-                    onSwipeDown={closeImageViewerDialog}
-                    saveToLocalByLongPress={false}
-                    renderImage={(image) => (
-                        <Image
-                            source={{
-                                uri: image.source.uri,
-                                cache: 'force-cache',
-                                headers: {
-                                    Referer: referer,
-                                },
-                            }}
-                            style={image.style}
-                        />
-                    )}
-                />
-            </Modal>
-        </ScrollView>
+                {messages.map((message) => renderMessage(message))}
+            </ScrollView>
+           <ImageView
+    images={getImages()}
+    imageIndex={imageViewerIndex}
+    visible={showImageViewerDialog}
+    onRequestClose={() => closeImageViewerDialog()}
+    swipeToCloseEnabled={true}
+    animationType="fade"
+    backgroundColor={PERSONA_COLORS.overlay}
+/>
+        </BlurView>
     );
 }
 
-export default MessageList;
-
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 8,
-        paddingBottom: 8,
+        flex: 1,
+        backgroundColor: PERSONA_COLORS.overlay
     },
+    scrollView: {
+        paddingTop: 8,
+        paddingBottom: 8
+    },
+    messageWrapper: {
+        margin: 8,
+        borderRadius: 12,
+        overflow: 'hidden'
+    },
+    messageGradient: {
+        padding: 12,
+        borderRadius: 12
+    }
 });
+
+export default MessageList;

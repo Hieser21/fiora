@@ -1,26 +1,27 @@
 import React from 'react';
 import { Button, Text, View } from 'native-base';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import PageContainer from '../../components/PageContainer';
 import Avatar from '../../components/Avatar';
-import {
-    useFocusLinkman,
-    useIsAdmin,
-    useLinkmans,
-    useSelfId,
-} from '../../hooks/useStore';
+import { useFocusLinkman, useIsAdmin, useLinkmans, useSelfId } from '../../hooks/useStore';
 import { Linkman } from '../../types/redux';
 import action from '../../state/action';
-import {
-    addFriend,
-    deleteFriend,
-    getLinkmanHistoryMessages,
-    sealUser,
-    sealUserOnlineIp,
-} from '../../service';
+import { addFriend, deleteFriend, getLinkmanHistoryMessages, sealUser, sealUserOnlineIp } from '../../service';
 import getFriendId from '../../utils/getFriendId';
 import Toast from '../../components/Toast';
+
+const PERSONA_COLORS = {
+    primary: '#FF0000',
+    secondary: '#000000',
+    accent: '#FFFFFF',
+    text: {
+        primary: '#FFFFFF',
+        secondary: '#666666'
+    }
+};
 
 type Props = {
     user: {
@@ -34,13 +35,21 @@ type Props = {
 function UserInfo({ user }: Props) {
     const { _id, avatar, username } = user;
     const linkmans = useLinkmans();
-    const friend = linkmans.find((linkman) =>
-        linkman._id.includes(_id),
-    ) as Linkman;
+    const friend = linkmans.find((linkman) => linkman._id.includes(_id)) as Linkman;
     const isFriend = friend && friend.type === 'friend';
     const isAdmin = useIsAdmin();
     const currentLinkman = useFocusLinkman() as Linkman;
     const self = useSelfId();
+    const scaleAnim = React.useRef(new Animated.Value(0)).current;
+
+    React.useEffect(() => {
+        Animated.spring(scaleAnim, {
+            toValue: 1,
+            tension: 20,
+            friction: 7,
+            useNativeDriver: true
+        }).start();
+    }, []);
 
     function handleSendMessage() {
         action.setFocus(friend._id);
@@ -120,89 +129,108 @@ function UserInfo({ user }: Props) {
 
     return (
         <PageContainer>
-            <View style={styles.container}>
-                <View style={styles.userContainer}>
-                    <Avatar src={avatar} size={88} />
-                    <Text style={styles.nick}>{username}</Text>
-                </View>
-                <View style={styles.buttonContainer}>
-                    {isFriend ? (
-                        <>
-                            <Button
-                                primary
-                                block
-                                style={styles.button}
-                                onPress={handleSendMessage}
-                            >
-                                <Text>Send Message</Text>
-                            </Button>
-                            <Button
-                                primary
-                                block
-                                danger
-                                style={styles.button}
-                                onPress={handleDeleteFriend}
-                            >
-                                <Text>Delete Friend</Text>
-                            </Button>
-                        </>
-                    ) : (
-                        <Button
-                            primary
-                            block
-                            style={styles.button}
-                            onPress={handleAddFriend}
-                        >
-                            <Text>Add Friend</Text>
-                        </Button>
-                    )}
-                    {isAdmin && (
-                        <>
-                            <Button
-                                primary
-                                block
-                                danger
-                                style={styles.button}
-                                onPress={handleSealUser}
-                            >
-                                <Text>Block</Text>
-                            </Button>
-                            <Button
-                                primary
-                                block
-                                danger
-                                style={styles.button}
-                                onPress={handleSealIp}
-                            >
-                                <Text>Block ip</Text>
-                            </Button>
-                        </>
-                    )}
-                </View>
-            </View>
+            <BlurView intensity={20} tint="dark" style={styles.container}>
+                <LinearGradient
+                    colors={[PERSONA_COLORS.secondary, PERSONA_COLORS.primary]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.gradient}
+                >
+                    <Animated.View style={[
+                        styles.content,
+                        { 
+                            transform: [
+                                { scale: scaleAnim },
+                                { skewX: '-5deg' }
+                            ] 
+                        }
+                    ]}>
+                        <View style={styles.userContainer}>
+                            <Avatar src={avatar} size={88} />
+                            <Text style={styles.nick}>{username}</Text>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            {isFriend ? (
+                                <>
+                                    <Button primary block style={styles.button} onPress={handleSendMessage}>
+                                        <Text style={styles.buttonText}>Send Message</Text>
+                                    </Button>
+                                    <Button danger block style={styles.button} onPress={handleDeleteFriend}>
+                                        <Text style={styles.buttonText}>Delete Friend</Text>
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button primary block style={styles.button} onPress={handleAddFriend}>
+                                    <Text style={styles.buttonText}>Add Friend</Text>
+                                </Button>
+                            )}
+                            {isAdmin && (
+                                <>
+                                    <Button danger block style={styles.button} onPress={handleSealUser}>
+                                        <Text style={styles.buttonText}>Block</Text>
+                                    </Button>
+                                    <Button danger block style={styles.button} onPress={handleSealIp}>
+                                        <Text style={styles.buttonText}>Block IP</Text>
+                                    </Button>
+                                </>
+                            )}
+                        </View>
+                    </Animated.View>
+                </LinearGradient>
+            </BlurView>
         </PageContainer>
     );
 }
 
-export default UserInfo;
-
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 20,
-        paddingLeft: 16,
-        paddingRight: 16,
+        flex: 1,
+        margin: 12,
+        borderRadius: 12,
+        overflow: 'hidden'
+    },
+    gradient: {
+        flex: 1,
+        padding: 2
+    },
+    content: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        padding: 20,
+        borderRadius: 12
     },
     userContainer: {
-        alignItems: 'center',
+        alignItems: 'center'
     },
     nick: {
-        color: '#333',
-        marginTop: 6,
+        color: PERSONA_COLORS.text.primary,
+        marginTop: 12,
+        fontSize: 24,
+        fontWeight: 'bold',
+        textShadowColor: PERSONA_COLORS.primary,
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2
     },
     buttonContainer: {
-        marginTop: 20,
+        marginTop: 24
     },
     button: {
         marginBottom: 12,
+        borderRadius: 8,
+        shadowColor: PERSONA_COLORS.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 8,
+        elevation: 8
     },
+    buttonText: {
+        color: PERSONA_COLORS.text.primary,
+        fontSize: 16,
+        fontWeight: 'bold',
+        textShadowColor: PERSONA_COLORS.secondary,
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2
+    }
 });
+
+export default UserInfo;

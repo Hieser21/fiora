@@ -71,14 +71,14 @@ function Message({
         }
     }, []);
     async function handleDeleteMessage() {
-        const options = ['Withdraw', 'Cancel'];
+        const options = ['Delete', 'Cancel'];
         ActionSheet.show(
             {
                 options: ['OK', 'Cancel'],
                 cancelButtonIndex: options.findIndex(
                     (option) => option === 'Cancel',
                 ),
-                title: 'Do you want to withdraw this message?',
+                title: 'Do you want to Delete this message?',
             },
             async (buttonIndex) => {
                 switch (buttonIndex) {
@@ -237,11 +237,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse',
     },
     messageContainer: {
-        borderRadius: 8,
+        borderRadius: 12,
         overflow: 'hidden',
     },
     gradient: {
         padding: 2,
+        borderRadius: 12,
         flexDirection: 'row',
     },
     info: {

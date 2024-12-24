@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Animated } from 'react-native';
 import { Scene, Router, Stack, Tabs, Lightbox } from 'react-native-router-flux';
 import { Icon, Root } from 'native-base';
-
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { connect } from 'react-redux';
+
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
 import Login from './pages/LoginSignup/Login';
 import Signup from './pages/LoginSignup/Signup';
-
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
 import Notification from './components/Nofitication';
@@ -23,6 +24,13 @@ import SearchResult from './pages/SearchResult/SearchResult';
 import GroupInfo from './pages/GroupInfo/GroupInfo';
 import BackButton from './components/BackButton';
 
+const PERSONA_COLORS = {
+    primary: '#FF0000',
+    secondary: '#000000',
+    accent: '#FFFFFF',
+    text: '#FFFFFF'
+};
+
 type Props = {
     title: string;
     primaryColor: string;
@@ -30,146 +38,153 @@ type Props = {
 };
 
 function App({ title, primaryColor, isLogin }: Props) {
-    const primaryColor10 = `rgba(${primaryColor}, 1)`;
-    const primaryColor8 = `rgba(${primaryColor}, 0.8)`;
+    const fadeAnim = React.useRef(new Animated.Value(0)).current;
+
+    React.useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true
+        }).start();
+    }, []);
 
     const sceneCommonProps = {
         hideNavBar: false,
         navigationBarStyle: {
-            backgroundColor: primaryColor10,
+            backgroundColor: PERSONA_COLORS.secondary,
             borderBottomWidth: 0,
+            elevation: 8,
+            shadowColor: PERSONA_COLORS.primary,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.5,
+            shadowRadius: 8
         },
-        navBarButtonColor: '#f9f9f9',
+        navBarButtonColor: PERSONA_COLORS.accent,
         renderLeftButton: () => <BackButton />,
     };
 
     return (
         <View style={styles.container}>
             <Root>
-                <Router>
-                    <Stack hideNavBar>
-                        <Lightbox>
-                            <Tabs
-                                key="tabs"
-                                hideNavBar
-                                tabBarStyle={{
-                                    backgroundColor: primaryColor8,
-                                    borderTopWidth: 0,
-                                }}
-                                showLabel={false}
-                            >
-                                <Scene
-                                    key="chatlist"
-                                    navBarButtonColor="transparent"
-                                    component={ChatList}
-                                    initial
-                                    hideNavBar={!isLogin}
-                                    icon={({ focused }) => (
-                                        <Icon
-                                            name="chatbubble-ellipses-outline"
-                                            style={{
-                                                fontSize: 24,
-                                                color: focused
-                                                    ? 'white'
-                                                    : '#bbb',
-                                            }}
-                                        />
-                                    )}
-                                    renderLeftButton={() => <SelfInfo />}
-                                    renderRightButton={() => (
-                                        <ChatListRightButton />
-                                    )}
-                                    navigationBarStyle={{
-                                        backgroundColor: primaryColor10,
-                                        borderBottomWidth: 0,
-                                    }}
-                                />
-                                <Scene
-                                    key="other"
-                                    component={Other}
-                                    hideNavBar
-                                    title="Other"
-                                    icon={({ focused }) => (
-                                        <Icon
-                                            name="aperture-outline"
-                                            style={{
-                                                fontSize: 24,
-                                                color: focused
-                                                    ? 'white'
-                                                    : '#bbb',
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Tabs>
-                        </Lightbox>
-                        <Scene
-                            key="chat"
-                            component={Chat}
-                            title="Chat"
-                            getTitle={title}
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            renderLeftButton={() => <ChatBackButton />}
-                            renderRightButton={() => <ChatRightButton />}
-                        />
-                        <Scene
-                            key="login"
-                            component={Login}
-                            title="Log In"
-                            {...sceneCommonProps}
-                        />
-                        <Scene
-                            key="signup"
-                            component={Signup}
-                            title="Sign Up"
-                            {...sceneCommonProps}
-                        />
-                        <Scene
-                            key="groupProfile"
-                            component={GroupProfile}
-                            title="Group Profile"
-                            {...sceneCommonProps}
-                        />
-                        <Scene
-                            key="userInfo"
-                            component={UserInfo}
-                            title="Personal Information"
-                            {...sceneCommonProps}
-                        />
-                        <Scene
-                            key="groupInfo"
-                            component={GroupInfo}
-                            title="Group Information"
-                            {...sceneCommonProps}
-                        />
-                        <Scene
-                            key="searchResult"
-                            component={SearchResult}
-                            title="Search Results"
-                            {...sceneCommonProps}
-                        />
-                    </Stack>
-                </Router>
+                <BlurView intensity={20} tint="dark" style={styles.blurContainer}>
+                    <LinearGradient
+                        colors={[PERSONA_COLORS.secondary, PERSONA_COLORS.primary]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.gradient}
+                    >
+                        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+                        <Router sceneStyle={{ backgroundColor: 'transparent' }}>
+                        <Stack hideNavBar>
+                                    <Lightbox>
+                                        <Tabs
+                                            key="tabs"
+                                            hideNavBar
+                                            tabBarStyle={styles.tabBar}
+                                            showLabel={false}
+                                        >
+                                            <Scene
+                                                key="chatlist"
+                                                navBarButtonColor="transparent"
+                                                component={ChatList}
+                                                initial
+                                                hideNavBar={!isLogin}
+                                                icon={({ focused }) => (
+                                                    <Icon
+                                                        name="chatbubble-ellipses-outline"
+                                                        style={[
+                                                            styles.tabIcon,
+                                                            focused && styles.tabIconFocused
+                                                        ]}
+                                                    />
+                                                )}
+                                                renderLeftButton={() => <SelfInfo />}
+                                                renderRightButton={() => <ChatListRightButton />}
+                                                navigationBarStyle={styles.navBar}
+                                            />
+                                            <Scene
+                                                key="other"
+                                                component={Other}
+                                                hideNavBar
+                                                title="Other"
+                                                icon={({ focused }) => (
+                                                    <Icon
+                                                        name="aperture-outline"
+                                                        style={[
+                                                            styles.tabIcon,
+                                                            focused && styles.tabIconFocused
+                                                        ]}
+                                                    />
+                                                )}
+                                            />
+                                        </Tabs>
+                                    </Lightbox>
+                                    <Scene
+                                        key="chat"
+                                        component={Chat}
+                                        title="Chat"
+                                        getTitle={title}
+                                        {...sceneCommonProps}
+                                        renderLeftButton={() => <ChatBackButton />}
+                                        renderRightButton={() => <ChatRightButton />}
+                                    />
+                                    <Scene key="login" component={Login} title="Log In" {...sceneCommonProps} />
+                                    <Scene key="signup" component={Signup} title="Sign Up" {...sceneCommonProps} />
+                                    <Scene key="groupProfile" component={GroupProfile} title="Group Profile" {...sceneCommonProps} />
+                                    <Scene key="userInfo" component={UserInfo} title="Personal Information" {...sceneCommonProps} />
+                                    <Scene key="groupInfo" component={GroupInfo} title="Group Information" {...sceneCommonProps} />
+                                    <Scene key="searchResult" component={SearchResult} title="Search Results" {...sceneCommonProps} />
+                                </Stack>
+                            </Router>
+                        </Animated.View>
+                    </LinearGradient>
+                </BlurView>
             </Root>
-
             <Loading />
             <Notification />
         </View>
     );
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: PERSONA_COLORS.secondary
+    },
+    blurContainer: {
+        flex: 1
+    },
+    gradient: {
+        flex: 1
+    },
+    navBar: {
+        backgroundColor: PERSONA_COLORS.secondary,
+        borderBottomWidth: 0,
+        elevation: 8,
+        shadowColor: PERSONA_COLORS.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 8
+    },
+    tabBar: {
+        backgroundColor: PERSONA_COLORS.secondary,
+        borderTopWidth: 0,
+        elevation: 8,
+        shadowColor: PERSONA_COLORS.primary,
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 8
+    },
+    tabIcon: {
+        fontSize: 24,
+        color: 'rgba(255,255,255,0.5)'
+    },
+    tabIconFocused: {
+        color: PERSONA_COLORS.accent
+    }
+});
+
 export default connect((state: State) => ({
     primaryColor: state.ui.primaryColor,
     isLogin: !!(state.user as User)?._id,
 }))(App);
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});

@@ -85,7 +85,7 @@ function Other() {
                         size={100}
                     />
                     <Text style={styles.name}>
-                        Mason v{appInfo.expo.version}
+                        Mementos v{appInfo.expo.version}
                     </Text>
                 </View>
                 <List style={styles.list}>
