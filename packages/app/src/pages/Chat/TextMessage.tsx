@@ -25,6 +25,17 @@ type Props = {
 
 function TextMessage({ message, isSelf }: Props) {
     const children = [];
+    const handleLinkPress = (url: string) => {
+        const subscription = Linking.addEventListener('url', ({ url: deepLinkUrl }) => {
+            // Handle any deep linking logic here
+        });
+        
+        Linking.openURL(url);
+        
+        return () => {
+            subscription.remove();
+        };
+    };
     let copy = message.content;
 
     function push(str: string) {
@@ -72,7 +83,7 @@ function TextMessage({ message, isSelf }: Props) {
                 children.push(
                     <TouchableOpacity
                         key={Math.random()}
-                        onPress={() => Linking.openURL(r)}
+                        onPress={() => handleLinkPress(r)}
                     >
                         <BlurView intensity={10} tint={isSelf ? "light" : "dark"}>
                             <LinearGradient

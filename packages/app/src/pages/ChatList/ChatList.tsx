@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Animated } from 'react-native';
-import { Header, Item, Icon, Input } from 'native-base';
+import { Icon, Input, View } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
@@ -12,6 +12,7 @@ import PageContainer from '../../components/PageContainer';
 import { search } from '../../service';
 import { isiOS } from '../../utils/platform';
 
+
 const PERSONA_COLORS = {
     primary: '#FF0000',
     secondary: '#000000',
@@ -19,7 +20,7 @@ const PERSONA_COLORS = {
     text: '#FFFFFF'
 };
 
-export default function ChatList() {
+function ChatList() {
     const [searchKeywords, updateSearchKeywords] = useState('');
     const linkmans = useLinkmans();
     const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -89,22 +90,22 @@ export default function ChatList() {
                     end={{ x: 1, y: 1 }}
                     style={styles.gradient}
                 >
-                    <Header searchBar rounded noShadow style={styles.searchContainer}>
-                        <Item style={styles.searchItem}>
-                            <Icon name="ios-search" style={styles.searchIcon} />
-                            <Input
-                                style={styles.searchText}
-                                placeholder="Search Groups/Users"
-                                placeholderTextColor={PERSONA_COLORS.accent}
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                returnKeyType="search"
-                                value={searchKeywords}
-                                onChangeText={updateSearchKeywords}
-                                onSubmitEditing={handleSearch}
-                            />
-                        </Item>
-                    </Header>
+                   <View style={styles.searchContainer}>
+    <View style={styles.searchItem}>
+        <Icon name="search" style={styles.searchIcon} />
+        <Input
+            style={styles.searchText}
+            placeholder="Search Groups/Users"
+            placeholderTextColor={PERSONA_COLORS.accent}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="search"
+            value={searchKeywords}
+            onChangeText={updateSearchKeywords}
+            onSubmitEditing={handleSearch}
+        />
+    </View>
+</View>
                     <ScrollView style={styles.messageList}>
                         {linkmans && linkmans.map((linkman) => renderLinkman(linkman))}
                     </ScrollView>
@@ -147,3 +148,4 @@ const styles = StyleSheet.create({
         color: PERSONA_COLORS.text
     }
 });
+export default ChatList

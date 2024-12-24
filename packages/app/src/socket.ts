@@ -38,7 +38,7 @@ const options = {
     transports: ['websocket'],
 };
 
-const host = 'https://chat-app-00a3.onrender.com/';
+const host = 'http://192.168.0.104:9200';
 const socket = IO(host, options);
 
 function fetch<T = any>(
