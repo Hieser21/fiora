@@ -163,7 +163,7 @@ function App({ title, primaryColor, isLogin }: Props) {
           <Stack.Navigator 
             screenOptions={{
               headerStyle: styles.navBar,
-              headerShown: f
+              headerShown: false,
               headerTintColor: PERSONA_COLORS.accent
             }}
           >
