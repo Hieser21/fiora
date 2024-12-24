@@ -159,21 +159,22 @@ function App({ title, primaryColor, isLogin }: Props) {
     return (
         <NativeBaseProvider theme={theme}>
             <View style={styles.fullScreen}>
-        <NavigationContainer>
+        <NavigationContainer >
           <Stack.Navigator 
             screenOptions={{
               headerStyle: styles.navBar,
+              headerShown: f
               headerTintColor: PERSONA_COLORS.accent
             }}
           >
-            <Stack.Screen name="Main" component={TabNavigator} />
-            <Stack.Screen name="Chat" component={Chat} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={Signup} />
-            <Stack.Screen name="GroupProfile" component={GroupProfile} />
-            <Stack.Screen name="UserInfo" component={UserInfo} />
-            <Stack.Screen name="GroupInfo" component={GroupInfo} />
-            <Stack.Screen name="SearchResult" component={SearchResult} />
+            <Stack.Screen  name="Main" component={TabNavigator} options={{ headerShown: false }} />
+            <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={Login}  options={{ headerShown: false }} />
+            <Stack.Screen name="Signup" component={Signup}  options={{ headerShown: false }} />
+            <Stack.Screen name="GroupProfile" component={GroupProfile}  options={{ headerShown: false }} />
+            <Stack.Screen name="UserInfo" component={UserInfo}  options={{ headerShown: false }} />
+            <Stack.Screen name="GroupInfo" component={GroupInfo}  options={{ headerShown: false }} />
+            <Stack.Screen name="SearchResult" component={SearchResult}  options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
         </View>
